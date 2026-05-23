@@ -1,8 +1,8 @@
-const CACHE_NAME = "collection-photo-grid-v3-20260523";
+const CACHE_NAME = "collection-v4-compressed-photos-20260523";
 
 const ASSETS = [
   "./",
-  "./index.html?v=photo-grid-v3",
+  "./index.html?v=collection-v4",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png"

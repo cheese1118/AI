@@ -187,7 +187,7 @@ textarea{min-height:120px;resize:none;line-height:1.5}
 <body>
 <div class="wrap">
   <h1>Collection</h1>
-  <div class="sub">Save text. Share images.</div><div style="text-align:center;color:#9ca3af;font-size:12px;margin:-26px 0 28px;">版本：PhotoGrid V3</div>
+  <div class="sub">Save text. Share images.</div><div style="text-align:center;color:#9ca3af;font-size:12px;margin:-26px 0 28px;">版本：Collection-V4｜照片壓縮版</div>
 
   <div class="tabs">
     <button type="button" id="tabText" class="tab active">文字</button>
@@ -251,7 +251,7 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     <div class="section">
       <div id="photoList" class="photo-row"></div>
       <div id="photoEmpty" class="empty">尚未加入圖片</div>
-      <div class="hint">點一下圖片分享，長按 0.6 秒可刪除 / 排序。</div>
+      <div class="hint">點一下圖片分享，長按 0.6 秒可刪除 / 排序。照片會自動壓縮保存，目標約可存 30 張。</div>
     </div>
 
     <div class="section">
@@ -511,52 +511,79 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     toast("已調整順序");
   }
 
-  function addPhotos(event){
-    const input = event.target;
-    const files = Array.from(input.files || []);
-    if(!files.length) return;
-
-    let completed = 0;
-    let added = 0;
-
-    files.forEach(file=>{
-      if(!file || !file.type || !file.type.startsWith("image/")){
-        completed++;
-        return;
-      }
-
+  function compressImageFile(file, maxSize = 720, quality = 0.68){
+    return new Promise((resolve, reject)=>{
       const reader = new FileReader();
 
       reader.onload = ()=>{
-        photos.unshift({
-          id:"p"+Date.now()+"_"+Math.random().toString(36).slice(2),
-          name:file.name || "image",
-          type:file.type || "image/jpeg",
-          dataUrl:reader.result
-        });
+        const img = new Image();
 
-        added++;
-        completed++;
+        img.onload = ()=>{
+          let width = img.width;
+          let height = img.height;
 
-        if(completed === files.length){
-          savePhotos();
-          renderPhotos();
-          input.value = "";
-          toast("已加入照片");
-        }
+          if(width > height){
+            if(width > maxSize){
+              height = Math.round(height * maxSize / width);
+              width = maxSize;
+            }
+          }else{
+            if(height > maxSize){
+              width = Math.round(width * maxSize / height);
+              height = maxSize;
+            }
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const dataUrl = canvas.toDataURL("image/jpeg", quality);
+
+          resolve({
+            name:(file.name || "image").replace(/\.[^.]+$/, "") + ".jpg",
+            type:"image/jpeg",
+            dataUrl:dataUrl
+          });
+        };
+
+        img.onerror = reject;
+        img.src = reader.result;
       };
 
-      reader.onerror = ()=>{
-        completed++;
-        if(completed === files.length){
-          savePhotos();
-          renderPhotos();
-          input.value = "";
-        }
-      };
-
+      reader.onerror = reject;
       reader.readAsDataURL(file);
     });
+  }
+
+  async function addPhotos(event){
+    const files = Array.from(event.target.files || []);
+    if(!files.length) return;
+
+    for(const file of files){
+      if(!file || !file.type || !file.type.startsWith("image/")) continue;
+
+      try{
+        const compressed = await compressImageFile(file, 720, 0.68);
+
+        photos.unshift({
+          id:"p"+Date.now()+"_"+Math.random().toString(36).slice(2),
+          name:compressed.name,
+          type:compressed.type,
+          dataUrl:compressed.dataUrl
+        });
+      }catch(e){
+        // 若壓縮失敗，略過該張，避免中斷整批加入
+      }
+    }
+
+    savePhotos();
+    renderPhotos();
+    event.target.value = "";
+    toast("已加入並壓縮照片");
   }
 
   async function sharePhoto(photo){

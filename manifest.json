@@ -1,8 +1,8 @@
 {
-  "name": "Collection",
+  "name": "Collection V4",
   "short_name": "Collection",
-  "description": "Save text and share images. Photo grid V3.",
-  "start_url": "./index.html?v=photo-grid-v3",
+  "description": "Collection-V4: compressed photo storage, text and image collection PWA.",
+  "start_url": "./index.html?v=collection-v4",
   "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
