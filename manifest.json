@@ -1,8 +1,8 @@
 {
-  "name": "Collection V4",
+  "name": "Collection V5",
   "short_name": "Collection",
-  "description": "Collection-V4: compressed photo storage, text and image collection PWA.",
-  "start_url": "./index.html?v=collection-v4",
+  "description": "Collection-V5 IndexedDB original image storage.",
+  "start_url": "./index.html?v=collection-v5",
   "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",

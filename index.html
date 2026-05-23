@@ -9,7 +9,13 @@
 <meta name="apple-mobile-web-app-title" content="Collection">
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Collection Tab Fix</title>
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Collection">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>Collection V5</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
@@ -33,7 +39,13 @@ h1{
   text-align:center;
   color:#7d838c;
   font-size:24px;
-  margin:24px 0 38px;
+  margin:24px 0 10px;
+}
+.version{
+  text-align:center;
+  color:#9ca3af;
+  font-size:12px;
+  margin:0 0 28px;
 }
 .tabs,.category-tabs{
   display:grid;
@@ -101,7 +113,6 @@ h1{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:12px;
-  align-items:center;
 }
 .photo-card{
   appearance:none;
@@ -187,7 +198,8 @@ textarea{min-height:120px;resize:none;line-height:1.5}
 <body>
 <div class="wrap">
   <h1>Collection</h1>
-  <div class="sub">Save text. Share images.</div><div style="text-align:center;color:#9ca3af;font-size:12px;margin:-26px 0 28px;">版本：Collection-V4｜照片壓縮版</div>
+  <div class="sub">Save text. Share images.</div>
+  <div class="version">版本：Collection-V5｜IndexedDB 原圖版</div>
 
   <div class="tabs">
     <button type="button" id="tabText" class="tab active">文字</button>
@@ -251,7 +263,7 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     <div class="section">
       <div id="photoList" class="photo-row"></div>
       <div id="photoEmpty" class="empty">尚未加入圖片</div>
-      <div class="hint">點一下圖片分享，長按 0.6 秒可刪除 / 排序。照片會自動壓縮保存，目標約可存 30 張。</div>
+      <div class="hint">照片使用 IndexedDB 儲存，保留原圖畫質。一列四張顯示。</div>
     </div>
 
     <div class="section">
@@ -326,15 +338,77 @@ textarea{min-height:120px;resize:none;line-height:1.5}
 <script>
 (function(){
   const TEXT_KEY="collection_text_tabfix_v1";
-  const PHOTO_KEY="collection_photo_tabfix_v1";
+  const DB_NAME="CollectionV5DB";
+  const DB_VERSION=1;
+  const PHOTO_STORE="photos";
 
   let textCards=[];
   let photos=[];
+  let db=null;
   let activeCat="code";
   let currentTextId=null;
   let currentPhotoId=null;
   let pressTimer=null;
   let didLong=false;
+
+  
+
+  function openDB(){
+    return new Promise((resolve,reject)=>{
+      const req=indexedDB.open(DB_NAME,DB_VERSION);
+      req.onupgradeneeded=e=>{
+        const database=e.target.result;
+        if(!database.objectStoreNames.contains(PHOTO_STORE)){
+          database.createObjectStore(PHOTO_STORE,{keyPath:"id"});
+        }
+      };
+      req.onsuccess=e=>{db=e.target.result;resolve(db)};
+      req.onerror=()=>reject(req.error);
+    });
+  }
+
+  function photoStore(mode="readonly"){
+    return db.transaction(PHOTO_STORE,mode).objectStore(PHOTO_STORE);
+  }
+
+  function dbGetAllPhotos(){
+    return new Promise((resolve,reject)=>{
+      const req=photoStore().getAll();
+      req.onsuccess=()=>resolve(req.result||[]);
+      req.onerror=()=>reject(req.error);
+    });
+  }
+
+  function dbPutPhoto(photo){
+    return new Promise((resolve,reject)=>{
+      const req=photoStore("readwrite").put(photo);
+      req.onsuccess=()=>resolve();
+      req.onerror=()=>reject(req.error);
+    });
+  }
+
+  function dbDeletePhoto(id){
+    return new Promise((resolve,reject)=>{
+      const req=photoStore("readwrite").delete(id);
+      req.onsuccess=()=>resolve();
+      req.onerror=()=>reject(req.error);
+    });
+  }
+
+  function dbClearPhotos(){
+    return new Promise((resolve,reject)=>{
+      const req=photoStore("readwrite").clear();
+      req.onsuccess=()=>resolve();
+      req.onerror=()=>reject(req.error);
+    });
+  }
+
+  async function savePhotoOrder(){
+    for(let i=0;i<photos.length;i++){
+      photos[i].order=i;
+      await dbPutPhoto(photos[i]);
+    }
+  }
 
   function load(){
     textCards = JSON.parse(localStorage.getItem(TEXT_KEY) || "null") || [
@@ -343,11 +417,10 @@ textarea{min-height:120px;resize:none;line-height:1.5}
       {id:"t3",cat:"hello",title:"Hi",body:"Hi"},
       {id:"t4",cat:"dialog",title:"OK",body:"OK"}
     ];
-    photos = JSON.parse(localStorage.getItem(PHOTO_KEY) || "[]");
   }
 
   function saveText(){localStorage.setItem(TEXT_KEY,JSON.stringify(textCards))}
-  function savePhotos(){localStorage.setItem(PHOTO_KEY,JSON.stringify(photos))}
+  async function savePhotos(){await savePhotoOrder()}
 
   function toast(msg){
     const t=document.getElementById("toast");
@@ -511,79 +584,36 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     toast("已調整順序");
   }
 
-  function compressImageFile(file, maxSize = 720, quality = 0.68){
-    return new Promise((resolve, reject)=>{
-      const reader = new FileReader();
-
-      reader.onload = ()=>{
-        const img = new Image();
-
-        img.onload = ()=>{
-          let width = img.width;
-          let height = img.height;
-
-          if(width > height){
-            if(width > maxSize){
-              height = Math.round(height * maxSize / width);
-              width = maxSize;
-            }
-          }else{
-            if(height > maxSize){
-              width = Math.round(width * maxSize / height);
-              height = maxSize;
-            }
-          }
-
-          const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
-
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, width, height);
-
-          const dataUrl = canvas.toDataURL("image/jpeg", quality);
-
-          resolve({
-            name:(file.name || "image").replace(/\.[^.]+$/, "") + ".jpg",
-            type:"image/jpeg",
-            dataUrl:dataUrl
-          });
-        };
-
-        img.onerror = reject;
-        img.src = reader.result;
-      };
-
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+  async function addPhotos(event){
+    const files=Array.from(event.target.files||[]);
+    if(!files.length)return;
+    let added=0;
+    for(const file of files){
+      if(!file.type || !file.type.startsWith("image/")) continue;
+      const dataUrl=await fileToDataURL(file);
+      photos.unshift({
+        id:"p"+Date.now()+"_"+Math.random().toString(36).slice(2),
+        name:file.name || "image",
+        type:file.type || "image/jpeg",
+        dataUrl,
+        order:0,
+        createdAt:Date.now()
+      });
+      added++;
+    }
+    await savePhotoOrder();
+    renderPhotos();
+    event.target.value="";
+    toast(added?"已加入照片":"未加入照片");
   }
 
-  async function addPhotos(event){
-    const files = Array.from(event.target.files || []);
-    if(!files.length) return;
-
-    for(const file of files){
-      if(!file || !file.type || !file.type.startsWith("image/")) continue;
-
-      try{
-        const compressed = await compressImageFile(file, 720, 0.68);
-
-        photos.unshift({
-          id:"p"+Date.now()+"_"+Math.random().toString(36).slice(2),
-          name:compressed.name,
-          type:compressed.type,
-          dataUrl:compressed.dataUrl
-        });
-      }catch(e){
-        // 若壓縮失敗，略過該張，避免中斷整批加入
-      }
-    }
-
-    savePhotos();
-    renderPhotos();
-    event.target.value = "";
-    toast("已加入並壓縮照片");
+  function fileToDataURL(file){
+    return new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onload=()=>resolve(reader.result);
+      reader.onerror=reject;
+      reader.readAsDataURL(file);
+    });
   }
 
   async function sharePhoto(photo){
@@ -609,20 +639,22 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     openModal("photoManageModal");
   }
 
-  function deletePhoto(){
+  async function deletePhoto(){
     photos=photos.filter(x=>x.id!==currentPhotoId);
-    savePhotos();
+    await dbDeletePhoto(currentPhotoId);
+    await savePhotoOrder();
     closeModal("photoManageModal");
     renderPhotos();
+    toast("已刪除圖片");
   }
 
-  function movePhoto(direction){
+  async function movePhoto(direction){
     const index=photos.findIndex(x=>x.id===currentPhotoId);
     if(index<0)return;
     const target=index+direction;
     if(target<0||target>=photos.length){toast(direction<0?"已在最前面":"已在最後面");return}
     [photos[index],photos[target]]=[photos[target],photos[index]];
-    savePhotos();
+    await savePhotoOrder();
     renderPhotos();
     toast("已調整順序");
   }
@@ -662,7 +694,7 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     toast("請貼上備份代碼");
   }
 
-  function restoreFromCode(){
+  async function restoreFromCode(){
     const code = document.getElementById("restoreCode").value.trim();
     if(!code) return;
 
@@ -679,7 +711,8 @@ textarea{min-height:120px;resize:none;line-height:1.5}
       }
 
       saveText();
-      savePhotos();
+      await dbClearPhotos();
+      await savePhotoOrder();
 
       activeCat = "code";
       updateCatUI();
@@ -717,12 +750,12 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     openModal("clearAllModal");
   }
 
-  function confirmClearAllData(){
+  async function confirmClearAllData(){
     textCards = [];
     photos = [];
 
     saveText();
-    savePhotos();
+    await dbClearPhotos();
 
     // 同步清除目前版本可能用到的 localStorage keys
     try{
@@ -761,10 +794,7 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     });
 
     document.getElementById("addTextBtn").addEventListener("click",addText);
-    document.getElementById("addPhotoBtn").addEventListener("click",()=>{
-      const input = document.getElementById("photoInput");
-      if(input) input.click();
-    });
+    document.getElementById("addPhotoBtn").addEventListener("click",()=>document.getElementById("photoInput").click());
     document.getElementById("photoInput").addEventListener("change",addPhotos);
 
     document.getElementById("exportBtn").addEventListener("click",exportData);
@@ -790,8 +820,11 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     });
   }
 
-  document.addEventListener("DOMContentLoaded",()=>{
+  document.addEventListener("DOMContentLoaded",async()=>{
+    await openDB();
     load();
+    photos=await dbGetAllPhotos();
+    photos.sort((a,b)=>(a.order??0)-(b.order??0));
     bindUI();
     updateCatUI();
     renderText();
@@ -802,7 +835,7 @@ textarea{min-height:120px;resize:none;line-height:1.5}
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=photo-fix-v2");
+    navigator.serviceWorker.register("./sw.js?v=collection-v5");
   });
 }
 </script>
