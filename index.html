@@ -9,6 +9,12 @@
 <meta name="apple-mobile-web-app-title" content="Collection">
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Collection">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <title>Collection Tab Fix</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -43,7 +49,14 @@ h1{
   border-radius:999px;
   background:#fff;
 }
-.tabs{grid-template-columns:1fr 1fr;margin-bottom:26px}
+.tabs{grid-template-columns:1fr 1fr;margin-bottom:18px}
+
+.tools{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:26px;
+}
 .category-tabs{grid-template-columns:1fr 1fr 1fr;margin-bottom:18px}
 .tab,.category-tab{
   border:0;
@@ -188,6 +201,22 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     <button type="button" id="tabPhoto" class="tab">圖片</button>
   </div>
 
+
+
+
+  <div id="backupBox" class="section" style="display:none;">
+    <label>備份代碼</label>
+    <textarea id="backupCode" readonly style="min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;"></textarea>
+    <button type="button" id="copyBackupBtn" class="btn" style="margin-top:12px;">複製備份代碼</button>
+    <div class="hint">請把這段代碼自行貼到備忘錄、iCloud 檔案或其他地方保存。</div>
+  </div>
+
+  <div id="restoreBox" class="section" style="display:none;">
+    <label>貼上備份代碼</label>
+    <textarea id="restoreCode" style="min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;"></textarea>
+    <button type="button" id="restoreBtn" class="btn" style="margin-top:12px;">還原資料</button>
+  </div>
+
   <section id="panelText" class="panel active">
     <div class="section">
       <div class="category-tabs">
@@ -208,7 +237,20 @@ textarea{min-height:120px;resize:none;line-height:1.5}
       </select>
       <input id="newTextTitle" placeholder="輸入標題">
       <textarea id="newTextBody" placeholder="輸入長文字內容"></textarea>
+
       <button type="button" id="addTextBtn" class="btn">新增文字卡片</button>
+    </div>
+
+    <div class="section">
+      <div class="tools" style="grid-template-columns:1fr 1fr 1fr;">
+        <button type="button" id="exportBtn" class="btn light" style="min-height:46px;font-size:15px;">備份</button>
+        <button type="button" id="importBtn" class="btn light" style="min-height:46px;font-size:15px;">還原</button>
+        <button type="button" id="clearAllBtn" class="btn danger" style="min-height:46px;font-size:15px;">清空</button>
+      </div>
+
+      <div class="hint" style="margin-top:14px;">
+        備份可複製保存，未來貼回即可完整還原。
+      </div>
     </div>
   </section>
 
@@ -270,6 +312,19 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     </div>
     <br>
     <button type="button" id="deletePhotoBtn" class="btn danger">刪除圖片</button>
+    <br><br>
+    <button type="button" class="btn light closeModal">取消</button>
+  </div>
+</div>
+
+
+<div id="clearAllModal" class="modal">
+  <div class="sheet">
+    <h2>清除全部資料</h2>
+    <div class="hint" style="margin-bottom:18px;">
+      此功能會刪除所有已儲存的文字卡片與照片。刪除後無法復原，請先備份再清除。
+    </div>
+    <button type="button" id="confirmClearAllBtn" class="btn danger">確定清除全部</button>
     <br><br>
     <button type="button" class="btn light closeModal">取消</button>
   </div>
@@ -539,6 +594,117 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     });
   }
 
+
+  function exportData(){
+    const data = {
+      app:"Collection",
+      version:1,
+      exportedAt:new Date().toISOString(),
+      textCards:textCards,
+      photos:photos
+    };
+
+    const code = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+
+    document.getElementById("backupBox").style.display = "block";
+    document.getElementById("restoreBox").style.display = "none";
+    document.getElementById("backupCode").value = code;
+
+    toast("已產生備份代碼");
+  }
+
+  function showRestoreBox(){
+    document.getElementById("restoreBox").style.display = "block";
+    document.getElementById("backupBox").style.display = "none";
+    toast("請貼上備份代碼");
+  }
+
+  function restoreFromCode(){
+    const code = document.getElementById("restoreCode").value.trim();
+    if(!code) return;
+
+    try{
+      const json = decodeURIComponent(escape(atob(code)));
+      const data = JSON.parse(json);
+
+      if(Array.isArray(data.textCards)){
+        textCards = data.textCards;
+      }
+
+      if(Array.isArray(data.photos)){
+        photos = data.photos;
+      }
+
+      saveText();
+      savePhotos();
+
+      activeCat = "code";
+      updateCatUI();
+      renderText();
+      renderPhotos();
+
+      document.getElementById("restoreCode").value = "";
+      document.getElementById("restoreBox").style.display = "none";
+
+      toast("已還原資料");
+    }catch(e){
+      toast("代碼無法還原");
+    }
+  }
+
+  async function copyBackupCode(){
+    const code = document.getElementById("backupCode").value;
+    if(!code) return;
+
+    try{
+      await navigator.clipboard.writeText(code);
+    }catch(e){
+      const ta = document.getElementById("backupCode");
+      ta.focus();
+      ta.select();
+      document.execCommand("copy");
+    }
+
+    toast("已複製備份代碼");
+  }
+
+
+
+  function clearAllData(){
+    openModal("clearAllModal");
+  }
+
+  function confirmClearAllData(){
+    textCards = [];
+    photos = [];
+
+    saveText();
+    savePhotos();
+
+    // 同步清除目前版本可能用到的 localStorage keys
+    try{
+      localStorage.removeItem("collection_text_tabfix_v1");
+      localStorage.removeItem("collection_photo_tabfix_v1");
+      localStorage.removeItem("collection_text_test_longpress_v1");
+      localStorage.removeItem("collection_photo_test_longpress_v1");
+    }catch(e){}
+
+    activeCat = "code";
+    updateCatUI();
+    renderText();
+    renderPhotos();
+
+    const backupBox = document.getElementById("backupBox");
+    const restoreBox = document.getElementById("restoreBox");
+
+    if(backupBox) backupBox.style.display = "none";
+    if(restoreBox) restoreBox.style.display = "none";
+
+    closeModal("clearAllModal");
+    toast("已清除全部文字與照片");
+  }
+
+
   function bindUI(){
     document.getElementById("tabText").addEventListener("click",()=>showPanel("text"));
     document.getElementById("tabPhoto").addEventListener("click",()=>showPanel("photo"));
@@ -554,6 +720,13 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     document.getElementById("addTextBtn").addEventListener("click",addText);
     document.getElementById("addPhotoBtn").addEventListener("click",()=>document.getElementById("photoInput").click());
     document.getElementById("photoInput").addEventListener("change",addPhotos);
+
+    document.getElementById("exportBtn").addEventListener("click",exportData);
+    document.getElementById("importBtn").addEventListener("click",showRestoreBox);
+    document.getElementById("copyBackupBtn").addEventListener("click",copyBackupCode);
+    document.getElementById("restoreBtn").addEventListener("click",restoreFromCode);
+    document.getElementById("clearAllBtn").addEventListener("click",clearAllData);
+    document.getElementById("confirmClearAllBtn").addEventListener("click",confirmClearAllData);
 
     document.getElementById("editTextBtn").addEventListener("click",editText);
     document.getElementById("deleteTextBtn").addEventListener("click",deleteText);

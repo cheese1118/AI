@@ -1,7 +1,7 @@
 {
   "name": "Collection",
   "short_name": "Collection",
-  "description": "文字與圖片快速收藏、複製、分享工具",
+  "description": "Save text and share images.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -1,4 +1,4 @@
-const CACHE_NAME = "collection-stable-v1";
+const CACHE_NAME = "collection-final-stable-v1";
 
 const ASSETS = [
   "./",
