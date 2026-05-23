@@ -1,21 +1,15 @@
-Collection PWA
+Collection PWA PhotoFix V2
 
 上傳方式：
 1. 解壓縮 ZIP
-2. 將全部檔案上傳到 GitHub Repository
-3. Repository → Settings → Pages
-4. Branch 選 main / root
-5. 開啟 GitHub Pages 網址
+2. 將全部檔案覆蓋上傳到 GitHub Repository
+3. 確認 index.html、manifest.json、sw.js、icon-192.png、icon-512.png 都有更新
+4. GitHub Pages 網址開啟後，建議 iPhone 刪除舊主畫面 App 後重新加入
 
-iPhone 安裝：
-1. Safari 開啟 GitHub Pages
-2. 分享 → 加入主畫面
-3. 從主畫面開啟即可像 App
+重要：
+如果 iPhone 還顯示舊版，請到：
+設定 → Safari → 進階 → 網站資料 → 刪除你的 GitHub Pages 網站資料
+然後重新加入主畫面。
 
-功能：
-- 文字 / 圖片頁籤
-- 長按管理功能
-- 圓形圖片縮圖
-- 備份代碼
-- 還原資料
-- 清除全部資料
+本版畫面會顯示：版本：PhotoFix V2
+看到這行才代表新版本載入成功。

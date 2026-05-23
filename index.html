@@ -9,12 +9,6 @@
 <meta name="apple-mobile-web-app-title" content="Collection">
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<meta name="theme-color" content="#ffffff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Collection">
-<link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="./icon-192.png">
 <title>Collection Tab Fix</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -194,7 +188,7 @@ textarea{min-height:120px;resize:none;line-height:1.5}
 <body>
 <div class="wrap">
   <h1>Collection</h1>
-  <div class="sub">Save text. Share images.</div>
+  <div class="sub">Save text. Share images.</div><div style="text-align:center;color:#9ca3af;font-size:12px;margin:-26px 0 28px;">版本：PhotoFix V2</div>
 
   <div class="tabs">
     <button type="button" id="tabText" class="tab active">文字</button>
@@ -262,7 +256,7 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     </div>
 
     <div class="section">
-      <input id="photoInput" type="file" accept="image/*" multiple style="display:none">
+      <input id="photoInput" type="file" accept="image/*" multiple style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
       <button type="button" id="addPhotoBtn" class="btn">加入照片</button>
     </div>
   </section>
@@ -519,26 +513,49 @@ textarea{min-height:120px;resize:none;line-height:1.5}
   }
 
   function addPhotos(event){
-    const files=Array.from(event.target.files||[]);
-    if(!files.length)return;
-    let done=0;
+    const input = event.target;
+    const files = Array.from(input.files || []);
+    if(!files.length) return;
+
+    let completed = 0;
+    let added = 0;
 
     files.forEach(file=>{
-      const reader=new FileReader();
-      reader.onload=()=>{
+      if(!file || !file.type || !file.type.startsWith("image/")){
+        completed++;
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = ()=>{
         photos.unshift({
           id:"p"+Date.now()+"_"+Math.random().toString(36).slice(2),
-          name:file.name,
-          type:file.type,
+          name:file.name || "image",
+          type:file.type || "image/jpeg",
           dataUrl:reader.result
         });
-        done++;
-        if(done===files.length){
+
+        added++;
+        completed++;
+
+        if(completed === files.length){
           savePhotos();
           renderPhotos();
-          event.target.value="";
+          input.value = "";
+          toast("已加入照片");
         }
       };
+
+      reader.onerror = ()=>{
+        completed++;
+        if(completed === files.length){
+          savePhotos();
+          renderPhotos();
+          input.value = "";
+        }
+      };
+
       reader.readAsDataURL(file);
     });
   }
@@ -718,7 +735,10 @@ textarea{min-height:120px;resize:none;line-height:1.5}
     });
 
     document.getElementById("addTextBtn").addEventListener("click",addText);
-    document.getElementById("addPhotoBtn").addEventListener("click",()=>document.getElementById("photoInput").click());
+    document.getElementById("addPhotoBtn").addEventListener("click",()=>{
+      const input = document.getElementById("photoInput");
+      if(input) input.click();
+    });
     document.getElementById("photoInput").addEventListener("change",addPhotos);
 
     document.getElementById("exportBtn").addEventListener("click",exportData);
@@ -756,7 +776,7 @@ textarea{min-height:120px;resize:none;line-height:1.5}
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js");
+    navigator.serviceWorker.register("./sw.js?v=photo-fix-v2");
   });
 }
 </script>
