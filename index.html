@@ -1,578 +1,754 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#202029" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Collection" />
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="apple-touch-icon" href="./icon-192.png" />
-  <title>One Tool｜Minimal API Style</title>
-    <style>
-    :root{
-      --bg:#202029;
-      --panel:#2c2c36;
-      --panel2:#383842;
-      --line:#555660;
-      --line2:#6b6c75;
-      --text:#f4f4f5;
-      --muted:#a3a3ad;
-      --white:#ffffff;
-      --danger:#ff6b6b;
-    }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    body{
-      margin:0;
-      min-height:100vh;
-      background:
-        radial-gradient(circle at top, rgba(255,255,255,.06), transparent 34%),
-        linear-gradient(180deg,#202029,#1b1b23);
-      color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Noto Sans TC","PingFang TC",sans-serif;
-      padding:calc(28px + env(safe-area-inset-top)) 24px calc(30px + env(safe-area-inset-bottom));
-    }
-    header{
-      max-width:620px;
-      margin:0 auto;
-      text-align:center;
-      padding:0 0 26px;
-    }
-    .eyebrow{display:none}
-    h1{
-      margin:0;
-      font-size:38px;
-      line-height:1.12;
-      letter-spacing:-.8px;
-      font-weight:300;
-      color:#f1f1f3;
-    }
-    h1 br{display:none}
-    h1::after{
-      content:"";
-      display:block;
-      width:82px;
-      height:6px;
-      border-radius:999px;
-      background:#777781;
-      margin:14px auto 0;
-      opacity:.9;
-    }
-    .gray{color:inherit}
-    .lead{
-      display:none;
-    }
-    .tabs{
-      max-width:560px;
-      margin:50px auto 0;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:30px;
-      padding:30px;
-      box-shadow:0 22px 60px rgba(0,0,0,.22);
-    }
-    button{
-      border:1px solid rgba(255,255,255,.20);
-      background:rgba(255,255,255,.045);
-      color:#f3f3f5;
-      border-radius:999px;
-      padding:14px 22px;
-      font-size:16px;
-      font-weight:700;
-      min-height:52px;
-      letter-spacing:.5px;
-    }
-    button:active{transform:scale(.985)}
-    .tab.active,.primary{
-      background:#fff;
-      color:#111;
-      border-color:#fff;
-      box-shadow:0 10px 24px rgba(0,0,0,.22);
-    }
-    main{
-      max-width:620px;
-      margin:0 auto;
-    }
-    .tool{
-      padding-top:0;
-      margin-top:0;
-    }
-    .panel{display:none}
-    .panel.active{display:block}
-    input,textarea{
-      width:100%;
-      border:1px solid rgba(255,255,255,.22);
-      border-radius:20px;
-      padding:18px 20px;
-      font-size:17px;
-      outline:none;
-      background:rgba(255,255,255,.075);
-      color:#fff;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
-    }
-    input::placeholder,textarea::placeholder{color:#94949f}
-    input:focus,textarea:focus{
-      border-color:rgba(255,255,255,.46);
-      background:rgba(255,255,255,.10);
-    }
-    textarea{
-      min-height:118px;
-      resize:vertical;
-      line-height:1.55;
-    }
-    .card{
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:30px;
-      padding:30px;
-      margin:22px 0;
-      box-shadow:0 22px 60px rgba(0,0,0,.22);
-    }
-    label{
-      display:block;
-      color:#b7b7bf;
-      font-size:14px;
-      margin-bottom:10px;
-      font-weight:500;
-    }
-    .prompt-segment{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:30px;
-      padding:16px;
-      margin:0 0 22px;
-      display:flex;
-      gap:10px;
-      background:rgba(255,255,255,.045);
-      overflow-x:auto;
-      scrollbar-width:none;
-      box-shadow:0 22px 60px rgba(0,0,0,.22);
-    }
-    .prompt-segment::-webkit-scrollbar{display:none}
-    .prompt-item{
-      min-height:52px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.055);
-      border-radius:999px;
-      padding:14px 24px;
-      margin:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex:0 0 auto;
-      color:#d7d7dc;
-    }
-    .prompt-item:first-child{
-      background:#fff;
-      color:#111;
-      border-color:#fff;
-      box-shadow:0 10px 24px rgba(0,0,0,.22);
-    }
-    .prompt-title{
-      font-size:16px;
-      font-weight:700;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-    .prompt-item::after{display:none}
-    .photo-section-title{
-      display:none;
-    }
-    .thumb-grid{
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:30px;
-      padding:16px;
-      margin:0 0 22px;
-      display:flex;
-      gap:12px;
-      background:rgba(255,255,255,.045);
-      overflow-x:auto;
-      scrollbar-width:none;
-      box-shadow:0 22px 60px rgba(0,0,0,.22);
-    }
-    .thumb-grid::-webkit-scrollbar{display:none}
-    .thumb{
-      position:relative;
-      width:64px;
-      height:64px;
-      flex:0 0 64px;
-      border-radius:22px;
-      overflow:hidden;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.16);
-    }
-    .thumb:first-child{
-      box-shadow:0 0 0 4px #fff;
-    }
-    .thumb img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-    .thumb-name{display:none}
-    .empty{
-      color:#a3a3ad;
-      text-align:center;
-      padding:32px 10px;
-      font-size:16px;
-    }
-    .hint{
-      color:#b7b7bf;
-      font-size:14px;
-      line-height:1.55;
-      margin-top:12px;
-    }
-    .row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-    }
-    .danger{
-      color:#fff;
-      border-color:rgba(255,107,107,.45);
-      background:rgba(255,107,107,.14);
-    }
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:calc(26px + env(safe-area-inset-bottom));
-      transform:translateX(-50%);
-      background:#fff;
-      color:#111;
-      border-radius:999px;
-      padding:12px 20px;
-      display:none;
-      z-index:99;
-      font-weight:700;
-      box-shadow:0 18px 42px rgba(0,0,0,.28);
-    }
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.50);
-      display:none;
-      align-items:flex-end;
-      z-index:50;
-      backdrop-filter:blur(8px);
-      -webkit-backdrop-filter:blur(8px);
-    }
-    .sheet{
-      width:100%;
-      background:#24242d;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:30px 30px 0 0;
-      padding:22px 18px calc(22px + env(safe-area-inset-bottom));
-      max-height:88vh;
-      overflow:auto;
-    }
-    .preview{
-      width:100%;
-      max-height:42vh;
-      object-fit:contain;
-      background:#1b1b23;
-      border-radius:24px;
-      margin:14px 0 16px;
-      border:1px solid rgba(255,255,255,.12);
-    }
-    .small{
-      color:#b7b7bf;
-      font-size:14px;
-      line-height:1.5;
-    }
-    @media(max-width:640px){
-      body{padding-left:18px;padding-right:18px}
-      h1{font-size:38px}
-      .tabs{margin-top:46px;padding:30px;grid-template-columns:1fr 1fr}
-      .card{padding:28px}
-      .prompt-segment,.thumb-grid{padding:14px}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#14141c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My Collection">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>My Collection Full Test</title>
+
+<style>
+:root{
+  --bg:#202029;
+  --panel:#2c2c36;
+  --text:#f4f4f5;
+  --muted:#a3a3ad;
+  --line:rgba(255,255,255,.16);
+  --white:#fff;
+  --danger:#ff6b6b;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(140,160,255,.22), transparent 30%),
+    radial-gradient(circle at 88% 18%, rgba(80,220,255,.12), transparent 22%),
+    radial-gradient(circle at 12% 38%, rgba(255,255,255,.08), transparent 26%),
+    linear-gradient(180deg,#202029,#14141c 72%,#101018);
+  color:var(--text);
+  position:relative;
+  overflow-x:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Noto Sans TC","PingFang TC",sans-serif;
+  padding:calc(26px + env(safe-area-inset-top)) 22px calc(30px + env(safe-area-inset-bottom));
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  opacity:.42;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(to bottom, rgba(0,0,0,.92), rgba(0,0,0,.45) 58%, transparent 100%);
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:-20%;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    conic-gradient(from 210deg at 50% 20%, transparent 0 18%, rgba(140,160,255,.12) 23%, transparent 31% 100%),
+    linear-gradient(115deg, transparent 0 38%, rgba(255,255,255,.065) 39%, transparent 42% 100%),
+    linear-gradient(65deg, transparent 0 56%, rgba(80,220,255,.07) 57%, transparent 60% 100%);
+  animation:bgMove 16s linear infinite;
+}
+
+@keyframes bgMove{
+  0%{transform:translate3d(0,0,0) rotate(0deg)}
+  50%{transform:translate3d(-1.5%,1%,0) rotate(.6deg)}
+  100%{transform:translate3d(0,0,0) rotate(0deg)}
+}
+
+.wrap::before{
+  content:"";
+  display:block;
+  position:fixed;
+  left:50%;
+  top:86px;
+  width:280px;
+  height:280px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,.13), rgba(130,160,255,.07) 34%, transparent 68%);
+  filter:blur(6px);
+  z-index:-1;
+}
+
+.wrap{max-width:640px;margin:0 auto}
+h1{
+  text-align:center;
+  font-size:48px;
+  font-weight:360;
+  margin:0;
+  letter-spacing:-1.6px;
+  color:#fff;
+  text-shadow:
+    0 0 18px rgba(180,200,255,.38),
+    0 8px 26px rgba(0,0,0,.38);
+  position:relative;
+}
+
+h1::before{
+  content:"MY COLLECTION";
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  color:transparent;
+  -webkit-text-stroke:1px rgba(255,255,255,.08);
+  font-size:64px;
+  letter-spacing:1px;
+  white-space:nowrap;
+  z-index:-1;
+}
+
+.line{
+  width:96px;
+  height:6px;
+  border-radius:999px;
+  background:linear-gradient(90deg, transparent, #d8d8e8, #8aa4ff, transparent);
+  margin:16px auto 38px;
+  box-shadow:
+    0 0 18px rgba(138,164,255,.65),
+    0 0 36px rgba(255,255,255,.18);
+}
+.tabs{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--line);
+  border-radius:30px;
+  padding:14px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:22px;
+}
+.tab{
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06);
+  color:#ddd;
+  border-radius:999px;
+  min-height:54px;
+  font-size:16px;
+  font-weight:800;
+}
+.tab.active{background:#fff;color:#111;border-color:#fff}
+.panel{display:none}
+.panel.active{display:block}
+.section{
+  position:relative;
+  overflow:hidden;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--line);
+  border-radius:30px;
+  padding:12px;
+  margin-bottom:22px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 22px 60px rgba(0,0,0,.25);
+}
+.card-display-section{
+  padding:14px;
+}
+
+.section::before{
+  content:"";
+  position:absolute;
+  left:18px;
+  right:18px;
+  top:0;
+  height:1px;
+  background:linear-gradient(90deg, transparent, rgba(190,205,255,.55), transparent);
+  opacity:.65;
+}
+.category-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:6px;
+  margin-bottom:12px;
+}
+
+.category-tab{
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06);
+  color:#ddd;
+  border-radius:999px;
+  min-height:37px;
+  font-size:13px;
+  font-weight:800;
+}
+
+.category-tab.active{
+  background:#fff;
+  color:#111;
+  border-color:#fff;
+}
+
+.segment{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  overflow:visible;
+}
+.segment::-webkit-scrollbar{display:none}
+.copy-card{
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06);
+  color:#ddd;
+  border-radius:999px;
+  min-height:43px;
+  padding:0 19px;
+  flex:0 0 auto;
+  font-size:13px;
+  font-weight:700;
+  transition:.15s ease;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.copy-card:active,.photo-card:active{transform:scale(.97)}
+.copy-card.active{background:#fff;color:#111;border-color:#fff;box-shadow:0 7px 18px rgba(0,0,0,.20)}
+.photo-row{
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  align-items:center;
+}
+.photo-row::-webkit-scrollbar{display:none}
+.photo-card{
+  appearance:none;
+  -webkit-appearance:none;
+  padding:0;
+  margin:0;
+  line-height:0;
+  position:relative;
+  width:86px;
+  height:86px;
+  flex:0 0 86px;
+  border-radius:50%;
+  overflow:hidden;
+  border:none;
+  background:#111;
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.24),
+    0 3px 8px rgba(0,0,0,.18);
+}
+
+.photo-card:first-child{
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.24),
+    0 3px 8px rgba(0,0,0,.18);
+}
+
+.photo-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center;
+  display:block;
+  transform:scale(1.18);
+}
+label{display:block;color:#b7b7bf;font-size:14px;margin:0 0 10px}
+input,textarea,.select-input{
+  width:100%;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:20px;
+  padding:16px 18px;
+  font-size:17px;
+  outline:none;
+  background:rgba(255,255,255,.075);
+  color:#fff;
+}
+textarea{min-height:150px;resize:vertical;line-height:1.55}
+.select-input{
+  appearance:none;
+  -webkit-appearance:none;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:20px;
+  padding:16px 18px;
+  font-size:17px;
+  outline:none;
+  background:rgba(255,255,255,.075);
+  color:#fff;
+}
+input::placeholder,textarea::placeholder{color:#94949f}
+.btn{
+  width:100%;
+  border:1px solid rgba(255,255,255,.18);
+  background:#fff;
+  color:#111;
+  border-radius:999px;
+  min-height:54px;
+  padding:0 22px;
+  font-size:17px;
+  font-weight:800;
+}
+.btn.dark{background:rgba(255,255,255,.07);color:#fff}
+.btn.danger{background:rgba(255,107,107,.14);color:#fff;border-color:rgba(255,107,107,.45)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:calc(26px + env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  background:#fff;
+  color:#111;
+  border-radius:999px;
+  padding:12px 20px;
+  font-weight:700;
+  display:none;
+  box-shadow:0 18px 42px rgba(0,0,0,.28);
+  z-index:99;
+}
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.52);
+  display:none;
+  align-items:flex-end;
+  z-index:50;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+}
+.sheet{
+  width:100%;
+  background:#24242d;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:30px 30px 0 0;
+  padding:22px 18px calc(22px + env(safe-area-inset-bottom));
+  max-height:88vh;
+  overflow:auto;
+}
+.sheet h2{margin:0 0 18px;font-size:26px;font-weight:400}
+.empty{color:#a3a3ad;text-align:center;padding:20px 8px;font-size:15px}
+.hint{color:#b7b7bf;line-height:1.7;font-size:14px;margin-top:14px}
+</style>
 </head>
+
 <body>
-<header>
-  <div class="eyebrow">For creators</div>
+<div class="wrap">
   <h1>My Collection</h1>
-  <div class="lead">
-    Text, prompts, images, and reusable assets — all through a single quick-access workspace.
-  </div>
+  <div class="line"></div>
+
   <div class="tabs">
-    <button id="tabText" class="tab active" onclick="showPanel('text')">文字</button>
-    <button id="tabPhoto" class="tab" onclick="showPanel('photo')">圖片</button>
+    <button class="tab active" id="textTab" onclick="showPanel('text')">文字</button>
+    <button class="tab" id="photoTab" onclick="showPanel('photo')">圖片</button>
   </div>
-</header>
 
-<main>
-  <section class="tool">
-    <section id="panelText" class="panel active">
-      <div id="textList"></div>
-
-      <div class="card">
-        <label>輸入標題</label>
-        <input id="textTitle" placeholder="例如：Q版範本G、客戶回覆、VBA片段" />
-        <br><br>
-        <label>輸入短語</label>
-        <textarea id="textBody" placeholder="輸入短語..."></textarea>
-        <br><br>
-        <button class="primary" onclick="addTextItem()">儲存文字</button>
+  <section id="textPanel" class="panel active">
+    <div class="section card-display-section">
+      <div class="category-tabs">
+        <button class="category-tab active" id="catCode" onclick="setCategory('code')">程式碼</button>
+        <button class="category-tab" id="catGreeting" onclick="setCategory('greeting')">招呼碼</button>
+        <button class="category-tab" id="catDialog" onclick="setCategory('dialog')">對話碼</button>
       </div>
-    </section>
 
-    <section id="panelPhoto" class="panel">
-      <div class="photo-section-title">圖片</div>
-      <div id="photoGrid" class="thumb-grid"></div>
-      <div id="photoEmpty" class="empty">尚未加入照片</div>
+      <div id="cardList" class="segment"></div>
+      <div id="emptyText" class="empty">此類別尚未建立文字卡片</div>
+    </div>
 
-      <div class="card">
-        <label>新增圖片</label>
-        <input id="photoInput" type="file" accept="image/*" multiple onchange="addPhotos(event)" />
-        <div class="hint">點圖片可直接分享，長按圖片可刪除。</div>
+    <div style="height:90px;"></div>
+
+    <div class="section">
+      <label>新增至類別</label>
+      <select id="categoryInput" class="select-input">
+        <option value="code">程式碼</option>
+        <option value="greeting">招呼碼</option>
+        <option value="dialog">對話碼</option>
+      </select>
+
+      <br><br>
+
+      <label>輸入標題</label>
+      <input id="titleInput" placeholder="例如：Q版Prompt、LINE回覆、VBA" />
+      <br><br>
+      <label>輸入長文字內容</label>
+      <textarea id="bodyInput" placeholder="這裡可以貼很長的文字內容，點卡片時會完整複製..."></textarea>
+      <br><br>
+      <button class="btn" onclick="addCard()">儲存文字卡片</button>
+      <div class="hint">
+        • 可選擇新增到「程式碼 / 招呼碼 / 對話碼」<br>
+        • 點一下文字卡片：複製完整長文字<br>
+        • 長按文字卡片 2 秒：修改或刪除
       </div>
-    </section>
+    </div>
   </section>
-</main>
 
-<div id="toast" class="toast">完成</div>
+  <section id="photoPanel" class="panel">
+    <div class="section">
+      <div id="photoList" class="photo-row"></div>
+      <div id="emptyPhoto" class="empty">尚未加入圖片</div>
+    </div>
 
-<div id="photoModal" class="modal" onclick="closePhotoModal(event)">
+    <div class="section">
+      <label>新增圖片，可多選</label>
+      <input id="photoInput" type="file" accept="image/*" multiple onchange="addPhotos(event)" />
+      <div class="hint">
+        • 點一下圖片：直接開啟分享，可分享到 LINE<br>
+        • 長按圖片 2 秒：刪除圖片
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="toast" class="toast">已複製</div>
+
+<div id="actionModal" class="modal" onclick="closeActionModal(event)">
   <div class="sheet" onclick="event.stopPropagation()">
-    <h2 id="modalTitle" style="margin:4px 0 0;font-size:24px;font-weight:560;">Image</h2>
-    <div class="small">可直接分享到 LINE，或儲存到相簿後再使用。</div>
-    <img id="modalImg" class="preview" />
+    <h2 id="actionTitle">管理文字卡片</h2>
     <div class="row">
-      <button class="primary" onclick="shareCurrentPhoto()">Share</button>
-      <button onclick="downloadCurrentPhoto()">Save</button>
+      <button class="btn" onclick="editCurrentCard()">修改</button>
+      <button class="btn danger" onclick="showDeleteTextModal()">刪除</button>
     </div>
     <br>
-    <button class="danger" onclick="deleteCurrentPhoto()">Delete</button>
+    <button class="btn dark" onclick="hideActionModal()">取消</button>
+  </div>
+</div>
+
+<div id="editModal" class="modal" onclick="closeEditModal(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <h2>修改文字卡片</h2>
+    <label>類別</label>
+    <select id="editCategoryInput" class="select-input">
+      <option value="code">程式碼</option>
+      <option value="greeting">招呼碼</option>
+      <option value="dialog">對話碼</option>
+    </select>
+
     <br><br>
-    <button onclick="hideModal()">Close</button>
+
+    <label>標題</label>
+    <input id="editTitleInput" />
+    <br><br>
+    <label>長文字內容</label>
+    <textarea id="editBodyInput"></textarea>
+    <br><br>
+    <button class="btn" onclick="saveEditCard()">儲存修改</button>
+    <br><br>
+    <button class="btn dark" onclick="hideEditModal()">取消</button>
+  </div>
+</div>
+
+<div id="deleteTextModal" class="modal" onclick="closeDeleteTextModal(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <h2>確認刪除</h2>
+    <div class="hint">確定要刪除「<span id="deleteTextTitle"></span>」這張文字卡片嗎？</div>
+    <br>
+    <button class="btn danger" onclick="confirmDeleteText()">確定刪除</button>
+    <br><br>
+    <button class="btn dark" onclick="hideDeleteTextModal()">取消</button>
+  </div>
+</div>
+
+<div id="deletePhotoModal" class="modal" onclick="closeDeletePhotoModal(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <h2>確認刪除圖片</h2>
+    <div class="hint">確定要刪除這張圖片嗎？</div>
+    <br>
+    <button class="btn danger" onclick="confirmDeletePhoto()">確定刪除</button>
+    <br><br>
+    <button class="btn dark" onclick="hideDeletePhotoModal()">取消</button>
   </div>
 </div>
 
 <script>
-const DB_NAME = "quick_material_tool_openai_style_db";
-const DB_VERSION = 1;
-let db;
-let currentPhoto = null;
+const TEXT_KEY = "collection_text_cards_v2";
+const PHOTO_KEY = "collection_photos_v2";
 
-function toast(msg){
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.style.display = "block";
-  setTimeout(()=> t.style.display = "none", 1300);
-}
+let cards = [];
+let photos = [];
+let currentTextId = null;
+let currentPhotoId = null;
+let activeCategory = "code";
+let longPressTimer = null;
+let longPressTriggered = false;
 
 function showPanel(type){
-  document.getElementById("panelText").classList.toggle("active", type === "text");
-  document.getElementById("panelPhoto").classList.toggle("active", type === "photo");
-  document.getElementById("tabText").classList.toggle("active", type === "text");
-  document.getElementById("tabPhoto").classList.toggle("active", type === "photo");
+  document.getElementById("textPanel").classList.toggle("active", type === "text");
+  document.getElementById("photoPanel").classList.toggle("active", type === "photo");
+  document.getElementById("textTab").classList.toggle("active", type === "text");
+  document.getElementById("photoTab").classList.toggle("active", type === "photo");
 }
 
-function openDB(){
-  return new Promise((resolve, reject)=>{
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = e => {
-      db = e.target.result;
-      if(!db.objectStoreNames.contains("texts")) db.createObjectStore("texts", {keyPath:"id"});
-      if(!db.objectStoreNames.contains("photos")) db.createObjectStore("photos", {keyPath:"id"});
-    };
-    req.onsuccess = e => { db = e.target.result; resolve(db); };
-    req.onerror = () => reject(req.error);
+function loadAll(){
+  try{ cards = JSON.parse(localStorage.getItem(TEXT_KEY) || "[]"); }catch(e){ cards = []; }
+  try{ photos = JSON.parse(localStorage.getItem(PHOTO_KEY) || "[]"); }catch(e){ photos = []; }
+
+  if(cards.length === 0){
+    cards = [
+      {id:"demo_1", category:"dialog", title:"Q版Prompt", body:"這是一段很長的 Q版 Prompt 範例文字。點擊卡片會完整複製這整段內容。"},
+      {id:"demo_2", category:"greeting", title:"LINE回覆", body:"您好，已收到您的訊息，我這邊確認後會再回覆您，謝謝。"},
+      {id:"demo_3", category:"code", title:"VBA範例", body:"Sub Test()\n    MsgBox \"Hello\"\nEnd Sub"}
+    ];
+    saveCards();
+  }
+}
+
+function saveCards(){ localStorage.setItem(TEXT_KEY, JSON.stringify(cards)); }
+function savePhotos(){ localStorage.setItem(PHOTO_KEY, JSON.stringify(photos)); }
+
+function normalizeCards(){
+  cards = cards.map(card => {
+    if(!card.category) card.category = "code";
+    return card;
   });
+  saveCards();
 }
 
-function tx(store, mode="readonly"){ return db.transaction(store, mode).objectStore(store); }
-function getAll(store){
-  return new Promise((resolve, reject)=>{
-    const req = tx(store).getAll();
-    req.onsuccess = ()=> resolve(req.result || []);
-    req.onerror = ()=> reject(req.error);
-  });
-}
-function put(store, value){
-  return new Promise((resolve, reject)=>{
-    const req = tx(store, "readwrite").put(value);
-    req.onsuccess = ()=> resolve();
-    req.onerror = ()=> reject(req.error);
-  });
-}
-function del(store, id){
-  return new Promise((resolve, reject)=>{
-    const req = tx(store, "readwrite").delete(id);
-    req.onsuccess = ()=> resolve();
-    req.onerror = ()=> reject(req.error);
-  });
+function setCategory(category){
+  activeCategory = category;
+  document.getElementById("catCode").classList.toggle("active", category === "code");
+  document.getElementById("catGreeting").classList.toggle("active", category === "greeting");
+  document.getElementById("catDialog").classList.toggle("active", category === "dialog");
+  renderCards();
 }
 
-async function addTextItem(){
-  const title = document.getElementById("textTitle").value.trim();
-  const body = document.getElementById("textBody").value.trim();
-  if(!title || !body){ toast("請輸入標題與內容"); return; }
-  await put("texts", { id:"t_"+Date.now(), title, body, createdAt:Date.now() });
-  document.getElementById("textTitle").value = "";
-  document.getElementById("textBody").value = "";
-  toast("已新增");
-  renderTextItems();
+function renderCards(){
+  const list = document.getElementById("cardList");
+  const empty = document.getElementById("emptyText");
+  const filteredCards = cards.filter(card => (card.category || "code") === activeCategory);
+  empty.style.display = filteredCards.length ? "none" : "block";
+  list.innerHTML = filteredCards.map((card,index)=>`
+    <button class="copy-card ${index === 0 ? "active" : ""}"
+      ontouchstart="startTextLongPress(event,'${card.id}')"
+      ontouchend="endLongPress(event)"
+      ontouchmove="cancelLongPress()"
+      onmousedown="startTextLongPress(event,'${card.id}')"
+      onmouseup="endLongPress(event)"
+      onmouseleave="cancelLongPress()"
+      onclick="handleCardClick(event,'${card.id}')">
+      ${escapeHtml(card.title)}
+    </button>
+  `).join("");
 }
 
-async function renderTextItems(){
-  const q = "";
-  const list = document.getElementById("textList");
-  const items = (await getAll("texts"))
-    .sort((a,b)=> b.createdAt - a.createdAt)
-    .filter(x => !q || x.title.toLowerCase().includes(q) || x.body.toLowerCase().includes(q));
+function renderPhotos(){
+  const list = document.getElementById("photoList");
+  const empty = document.getElementById("emptyPhoto");
+  empty.style.display = photos.length ? "none" : "block";
+  list.innerHTML = photos.map(photo=>`
+    <button class="photo-card"
+      ontouchstart="startPhotoLongPress(event,'${photo.id}')"
+      ontouchend="endLongPress(event)"
+      ontouchmove="cancelLongPress()"
+      onmousedown="startPhotoLongPress(event,'${photo.id}')"
+      onmouseup="endLongPress(event)"
+      onmouseleave="cancelLongPress()"
+      onclick="handlePhotoClick(event,'${photo.id}')">
+      <img src="${photo.dataUrl}" alt="">
+    </button>
+  `).join("");
+}
 
-  if(items.length === 0){
-    list.innerHTML = `<div class="empty">尚未加入常用文字</div>`;
+function addCard(){
+  const title = document.getElementById("titleInput").value.trim();
+  const body = document.getElementById("bodyInput").value;
+  if(!title || !body.trim()){ toast("請輸入標題與內容"); return; }
+  const category = document.getElementById("categoryInput").value;
+  cards.unshift({id:"card_"+Date.now(), category, title, body});
+  activeCategory = category;
+  setCategory(category);
+  saveCards();
+  document.getElementById("titleInput").value = "";
+  document.getElementById("bodyInput").value = "";
+  renderCards();
+  toast("已儲存");
+}
+
+function handleCardClick(event,id){
+  if(longPressTriggered){
+    event.preventDefault();
+    longPressTriggered = false;
     return;
   }
-
-  list.innerHTML = `
-    <div class="prompt-segment">
-      ${items.map(item => `
-        <div class="prompt-item"
-          onclick="copyText('${item.id}')"
-          oncontextmenu="showDeleteConfirm(event,'${item.id}')">
-          <div class="prompt-title">${escapeHtml(item.title)}</div>
-        </div>
-      `).join("")}
-    </div>
-  `;
+  const card = cards.find(x=>x.id===id);
+  if(!card) return;
+  copyText(card.body);
+  document.querySelectorAll(".copy-card").forEach(btn=>btn.classList.remove("active"));
+  event.currentTarget.classList.add("active");
 }
 
-async function copyText(id){
-  const items = await getAll("texts");
-  const item = items.find(x => x.id === id);
-  if(!item) return;
-  await navigator.clipboard.writeText(item.body);
-  toast("已複製");
+function startTextLongPress(event,id){
+  longPressTriggered = false;
+  currentTextId = id;
+  clearTimeout(longPressTimer);
+  longPressTimer = setTimeout(()=>{
+    longPressTriggered = true;
+    if(navigator.vibrate) navigator.vibrate(45);
+    showActionModal(id);
+  },2000);
 }
 
-function showDeleteConfirm(event,id){
-  event.preventDefault();
-  if(confirm("要刪除這筆文字嗎？")) deleteText(id);
+function showActionModal(id){
+  currentTextId = id;
+  const card = cards.find(x=>x.id===id);
+  if(card) document.getElementById("actionTitle").textContent = card.title;
+  document.getElementById("actionModal").style.display = "flex";
+}
+function hideActionModal(){ document.getElementById("actionModal").style.display = "none"; }
+function closeActionModal(e){ if(e.target.id==="actionModal") hideActionModal(); }
+
+function editCurrentCard(){
+  const card = cards.find(x=>x.id===currentTextId);
+  if(!card) return;
+  document.getElementById("editCategoryInput").value = card.category || "code";
+  document.getElementById("editTitleInput").value = card.title;
+  document.getElementById("editBodyInput").value = card.body;
+  hideActionModal();
+  document.getElementById("editModal").style.display = "flex";
+}
+function hideEditModal(){ document.getElementById("editModal").style.display = "none"; }
+function closeEditModal(e){ if(e.target.id==="editModal") hideEditModal(); }
+
+function saveEditCard(){
+  const card = cards.find(x=>x.id===currentTextId);
+  if(!card) return;
+  const title = document.getElementById("editTitleInput").value.trim();
+  const body = document.getElementById("editBodyInput").value;
+  if(!title || !body.trim()){ toast("請輸入標題與內容"); return; }
+  card.title = title;
+  card.body = body;
+  saveCards();
+  renderCards();
+  hideEditModal();
+  toast("已修改");
 }
 
-async function deleteText(id){
-  await del("texts", id);
+function showDeleteTextModal(){
+  const card = cards.find(x=>x.id===currentTextId);
+  if(!card) return;
+  document.getElementById("deleteTextTitle").textContent = card.title;
+  hideActionModal();
+  document.getElementById("deleteTextModal").style.display = "flex";
+}
+function hideDeleteTextModal(){ document.getElementById("deleteTextModal").style.display = "none"; }
+function closeDeleteTextModal(e){ if(e.target.id==="deleteTextModal") hideDeleteTextModal(); }
+function confirmDeleteText(){
+  cards = cards.filter(x=>x.id!==currentTextId);
+  saveCards();
+  renderCards();
+  hideDeleteTextModal();
   toast("已刪除");
-  renderTextItems();
 }
 
-async function addPhotos(event){
+function addPhotos(event){
   const files = Array.from(event.target.files || []);
-  if(files.length === 0) return;
-  for(const file of files){
-    const dataUrl = await fileToDataURL(file);
-    await put("photos", {
-      id:"p_"+Date.now()+"_"+Math.random().toString(36).slice(2),
-      name:file.name || "image",
-      type:file.type || "image/jpeg",
-      dataUrl,
-      createdAt:Date.now()
-    });
-  }
-  event.target.value = "";
-  toast("已加入照片");
-  renderPhotos();
-}
-
-function fileToDataURL(file){
-  return new Promise((resolve, reject)=>{
+  if(!files.length) return;
+  let pending = files.length;
+  files.forEach(file=>{
     const reader = new FileReader();
-    reader.onload = ()=> resolve(reader.result);
-    reader.onerror = reject;
+    reader.onload = ()=>{
+      photos.unshift({
+        id:"photo_"+Date.now()+"_"+Math.random().toString(36).slice(2),
+        name:file.name || "image",
+        type:file.type || "image/jpeg",
+        dataUrl:reader.result
+      });
+      pending--;
+      if(pending===0){
+        savePhotos();
+        renderPhotos();
+        event.target.value = "";
+        toast("已加入圖片");
+      }
+    };
     reader.readAsDataURL(file);
   });
 }
 
-async function renderPhotos(){
-  const q = "";
-  const grid = document.getElementById("photoGrid");
-  const empty = document.getElementById("photoEmpty");
-  const photos = (await getAll("photos"))
-    .sort((a,b)=> b.createdAt - a.createdAt)
-    .filter(x => !q || x.name.toLowerCase().includes(q));
-
-  empty.style.display = photos.length ? "none" : "block";
-  grid.innerHTML = photos.map(p => `
-    <div class="thumb"
-      onclick="sharePhotoById('${p.id}')"
-      oncontextmenu="showPhotoDeleteConfirm(event,'${p.id}')">
-      <img src="${p.dataUrl}" alt="${escapeHtml(p.name)}">
-      <div class="thumb-name">${escapeHtml(p.name)}</div>
-    </div>
-  `).join("");
+function handlePhotoClick(event,id){
+  if(longPressTriggered){
+    event.preventDefault();
+    longPressTriggered = false;
+    return;
+  }
+  const photo = photos.find(x=>x.id===id);
+  if(photo) sharePhoto(photo);
 }
 
-
-async function sharePhotoById(id){
-  const photos = await getAll("photos");
-  const photo = photos.find(x => x.id === id);
-  if(!photo) return;
-  await sharePhotoObject(photo);
+function startPhotoLongPress(event,id){
+  longPressTriggered = false;
+  currentPhotoId = id;
+  clearTimeout(longPressTimer);
+  longPressTimer = setTimeout(()=>{
+    longPressTriggered = true;
+    if(navigator.vibrate) navigator.vibrate(45);
+    document.getElementById("deletePhotoModal").style.display = "flex";
+  },2000);
 }
 
-function showPhotoDeleteConfirm(event,id){
-  event.preventDefault();
-  if(confirm("要刪除這張照片嗎？")){
-    deletePhotoById(id);
+function hideDeletePhotoModal(){ document.getElementById("deletePhotoModal").style.display = "none"; }
+function closeDeletePhotoModal(e){ if(e.target.id==="deletePhotoModal") hideDeletePhotoModal(); }
+function confirmDeletePhoto(){
+  photos = photos.filter(x=>x.id!==currentPhotoId);
+  savePhotos();
+  renderPhotos();
+  hideDeletePhotoModal();
+  toast("已刪除圖片");
+}
+
+function endLongPress(event){
+  clearTimeout(longPressTimer);
+  longPressTimer = null;
+}
+function cancelLongPress(){
+  clearTimeout(longPressTimer);
+  longPressTimer = null;
+}
+
+async function copyText(text){
+  let success = false;
+  try{
+    await navigator.clipboard.writeText(text);
+    success = true;
+  }catch(err){}
+  if(!success){
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly","");
+    textarea.style.position = "fixed";
+    textarea.style.top = "0";
+    textarea.style.left = "-9999px";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+    try{ success = document.execCommand("copy"); }catch(err){}
+    document.body.removeChild(textarea);
+  }
+  if(success){
+    if(navigator.vibrate) navigator.vibrate(30);
+    toast("已複製完整內容");
+  }else{
+    alert("複製失敗，請手動選取文字");
   }
 }
 
-async function deletePhotoById(id){
-  await del("photos", id);
-  toast("已刪除");
-  renderPhotos();
-}
-
-async function sharePhotoObject(photo){
+async function sharePhoto(photo){
   try{
     const file = dataURLToFile(photo.dataUrl, photo.name, photo.type);
     if(navigator.canShare && navigator.canShare({files:[file]})){
-      await navigator.share({
-        title: photo.name,
-        files: [file]
-      });
+      await navigator.share({title:photo.name, files:[file]});
       toast("已開啟分享");
     }else if(navigator.share){
-      await navigator.share({ title: photo.name });
+      await navigator.share({title:photo.name});
     }else{
       toast("此瀏覽器不支援分享");
     }
   }catch(err){
-    console.log(err);
     toast("分享已取消或失敗");
   }
-}
-
-async function openPhoto(id){
-  const photos = await getAll("photos");
-  currentPhoto = photos.find(x => x.id === id);
-  if(!currentPhoto) return;
-  document.getElementById("modalTitle").textContent = currentPhoto.name;
-  document.getElementById("modalImg").src = currentPhoto.dataUrl;
-  document.getElementById("photoModal").style.display = "flex";
-}
-
-function hideModal(){
-  document.getElementById("photoModal").style.display = "none";
-  currentPhoto = null;
-}
-
-function closePhotoModal(e){
-  if(e.target.id === "photoModal") hideModal();
-}
-
-async function shareCurrentPhoto(){
-  if(!currentPhoto) return;
-  await sharePhotoObject(currentPhoto);
 }
 
 function dataURLToFile(dataUrl, filename, mimeType){
@@ -585,22 +761,11 @@ function dataURLToFile(dataUrl, filename, mimeType){
   return new File([u8arr], filename || "image.jpg", {type:mime});
 }
 
-function downloadCurrentPhoto(){
-  if(!currentPhoto) return;
-  const a = document.createElement("a");
-  a.href = currentPhoto.dataUrl;
-  a.download = currentPhoto.name || "image.jpg";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-
-async function deleteCurrentPhoto(){
-  if(!currentPhoto) return;
-  await del("photos", currentPhoto.id);
-  hideModal();
-  toast("已刪除");
-  renderPhotos();
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.style.display = "block";
+  setTimeout(()=>{ t.style.display = "none"; },1300);
 }
 
 function escapeHtml(str){
@@ -612,16 +777,15 @@ function escapeHtml(str){
     .replaceAll("'","&#039;");
 }
 
-(async function init(){
-  await openDB();
-  renderTextItems();
-  renderPhotos();
-})();
+loadAll();
+normalizeCards();
+renderCards();
+renderPhotos();
 </script>
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(console.error);
+    navigator.serviceWorker.register("./sw.js");
   });
 }
 </script>

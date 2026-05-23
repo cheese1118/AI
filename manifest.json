@@ -1,12 +1,10 @@
 {
   "name": "My Collection",
   "short_name": "Collection",
-  "description": "常用文字與圖片快速收藏、複製與分享工具",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
-  "background_color": "#202029",
-  "theme_color": "#202029",
+  "background_color": "#14141c",
+  "theme_color": "#14141c",
   "orientation": "portrait",
   "icons": [
     {
