@@ -3,223 +3,150 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#14141c">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="My Collection">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Collection">
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <title>My Collection Full Test</title>
 
 <style>
 :root{
-  --bg:#202029;
-  --panel:#2c2c36;
-  --text:#f4f4f5;
-  --muted:#a3a3ad;
-  --line:rgba(255,255,255,.16);
-  --white:#fff;
-  --danger:#ff6b6b;
+  --bg:#ffffff;
+  --text:#050505;
+  --muted:#7d838c;
+  --line:#dededb;
+  --soft:#f7f7f5;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
   margin:0;
   min-height:100vh;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(140,160,255,.22), transparent 30%),
-    radial-gradient(circle at 88% 18%, rgba(80,220,255,.12), transparent 22%),
-    radial-gradient(circle at 12% 38%, rgba(255,255,255,.08), transparent 26%),
-    linear-gradient(180deg,#202029,#14141c 72%,#101018);
+  background:#ffffff;
   color:var(--text);
-  position:relative;
-  overflow-x:hidden;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Noto Sans TC","PingFang TC",sans-serif;
-  padding:calc(26px + env(safe-area-inset-top)) 22px calc(30px + env(safe-area-inset-bottom));
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","PingFang TC","Noto Sans TC",sans-serif;
+  padding:calc(30px + env(safe-area-inset-top)) 22px calc(34px + env(safe-area-inset-bottom));
 }
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-2;
-  pointer-events:none;
-  opacity:.42;
-  background-image:
-    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
-  background-size:42px 42px;
-  mask-image:linear-gradient(to bottom, rgba(0,0,0,.92), rgba(0,0,0,.45) 58%, transparent 100%);
+.wrap{
+  max-width:720px;
+  margin:0 auto;
 }
-
-body::after{
-  content:"";
-  position:fixed;
-  inset:-20%;
-  z-index:-1;
-  pointer-events:none;
-  background:
-    conic-gradient(from 210deg at 50% 20%, transparent 0 18%, rgba(140,160,255,.12) 23%, transparent 31% 100%),
-    linear-gradient(115deg, transparent 0 38%, rgba(255,255,255,.065) 39%, transparent 42% 100%),
-    linear-gradient(65deg, transparent 0 56%, rgba(80,220,255,.07) 57%, transparent 60% 100%);
-  animation:bgMove 16s linear infinite;
-}
-
-@keyframes bgMove{
-  0%{transform:translate3d(0,0,0) rotate(0deg)}
-  50%{transform:translate3d(-1.5%,1%,0) rotate(.6deg)}
-  100%{transform:translate3d(0,0,0) rotate(0deg)}
-}
-
-.wrap::before{
-  content:"";
-  display:block;
-  position:fixed;
-  left:50%;
-  top:86px;
-  width:280px;
-  height:280px;
-  transform:translateX(-50%);
-  border-radius:50%;
-  background:radial-gradient(circle, rgba(255,255,255,.13), rgba(130,160,255,.07) 34%, transparent 68%);
-  filter:blur(6px);
-  z-index:-1;
-}
-
-.wrap{max-width:640px;margin:0 auto}
 h1{
   text-align:center;
-  font-size:48px;
-  font-weight:360;
+  font-size:clamp(64px,14vw,112px);
+  line-height:.9;
+  font-weight:500;
+  letter-spacing:-6px;
   margin:0;
-  letter-spacing:-1.6px;
-  color:#fff;
-  text-shadow:
-    0 0 18px rgba(180,200,255,.38),
-    0 8px 26px rgba(0,0,0,.38);
-  position:relative;
+  color:#050505;
 }
-
-h1::before{
-  content:"MY COLLECTION";
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  color:transparent;
-  -webkit-text-stroke:1px rgba(255,255,255,.08);
-  font-size:64px;
-  letter-spacing:1px;
-  white-space:nowrap;
-  z-index:-1;
-}
-
 .line{
-  width:96px;
-  height:6px;
-  border-radius:999px;
-  background:linear-gradient(90deg, transparent, #d8d8e8, #8aa4ff, transparent);
-  margin:16px auto 38px;
-  box-shadow:
-    0 0 18px rgba(138,164,255,.65),
-    0 0 36px rgba(255,255,255,.18);
+  display:none;
+}
+.subtitle{
+  text-align:center;
+  color:#7d838c;
+  font-size:clamp(20px,4vw,28px);
+  line-height:1.4;
+  margin:28px 0 42px;
+  font-weight:400;
+  letter-spacing:-.6px;
 }
 .tabs{
-  background:rgba(255,255,255,.05);
-  border:1px solid var(--line);
-  border-radius:30px;
-  padding:14px;
+  max-width:520px;
+  margin:0 auto 28px;
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:22px;
+  gap:0;
+  padding:6px;
+  border:1px solid #dededb;
+  border-radius:999px;
+  background:#ffffff;
 }
 .tab{
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.06);
-  color:#ddd;
+  border:none;
   border-radius:999px;
-  min-height:54px;
-  font-size:16px;
-  font-weight:800;
+  min-height:48px;
+  background:transparent;
+  color:#9ca3af;
+  font-size:18px;
+  font-weight:500;
 }
-.tab.active{background:#fff;color:#111;border-color:#fff}
+.tab.active{
+  background:#050505;
+  color:#ffffff;
+}
+.demo-count{
+  text-align:center;
+  color:#a1a1aa;
+  font-size:14px;
+  margin:0 0 24px;
+}
 .panel{display:none}
 .panel.active{display:block}
 .section{
-  position:relative;
-  overflow:hidden;
-  background:rgba(255,255,255,.05);
-  border:1px solid var(--line);
+  background:#ffffff;
+  border:1px solid #e5e5e1;
   border-radius:30px;
-  padding:12px;
-  margin-bottom:22px;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.08),
-    0 22px 60px rgba(0,0,0,.25);
-}
-.card-display-section{
-  padding:14px;
-}
-
-.section::before{
-  content:"";
-  position:absolute;
-  left:18px;
-  right:18px;
-  top:0;
-  height:1px;
-  background:linear-gradient(90deg, transparent, rgba(190,205,255,.55), transparent);
-  opacity:.65;
+  padding:18px;
+  margin-bottom:24px;
+  box-shadow:0 8px 30px rgba(0,0,0,.04);
 }
 .category-tabs{
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
-  gap:6px;
-  margin-bottom:12px;
-}
-
-.category-tab{
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.06);
-  color:#ddd;
+  gap:0;
+  padding:5px;
+  border:1px solid #dededb;
   border-radius:999px;
-  min-height:37px;
-  font-size:13px;
-  font-weight:800;
+  background:#ffffff;
+  margin-bottom:18px;
 }
-
+.category-tab{
+  border:none;
+  border-radius:999px;
+  min-height:44px;
+  background:transparent;
+  color:#9ca3af;
+  font-size:16px;
+  font-weight:500;
+}
 .category-tab.active{
-  background:#fff;
-  color:#111;
-  border-color:#fff;
+  background:#050505;
+  color:#ffffff;
 }
-
 .segment{
   display:flex;
   flex-wrap:wrap;
-  gap:8px;
+  gap:10px;
   overflow:visible;
 }
-.segment::-webkit-scrollbar{display:none}
 .copy-card{
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.06);
-  color:#ddd;
+  border:1px solid #dededb;
+  background:#ffffff;
+  color:#222;
   border-radius:999px;
-  min-height:43px;
-  padding:0 19px;
+  min-height:42px;
+  padding:0 18px;
   flex:0 0 auto;
-  font-size:13px;
-  font-weight:700;
+  font-size:15px;
+  font-weight:500;
   transition:.15s ease;
   user-select:none;
   -webkit-user-select:none;
 }
-.copy-card:active,.photo-card:active{transform:scale(.97)}
-.copy-card.active{background:#fff;color:#111;border-color:#fff;box-shadow:0 7px 18px rgba(0,0,0,.20)}
+.copy-card:active,.photo-card:active{
+  transform:scale(.97);
+}
+.copy-card.active{
+  background:#050505;
+  color:#ffffff;
+  border-color:#050505;
+}
 .photo-row{
   display:flex;
-  gap:6px;
+  gap:12px;
   overflow-x:auto;
   scrollbar-width:none;
   align-items:center;
@@ -235,85 +162,90 @@ h1::before{
   width:86px;
   height:86px;
   flex:0 0 86px;
-  border-radius:50%;
+  border-radius:24px;
   overflow:hidden;
   border:none;
-  background:#111;
-  box-shadow:
-    0 10px 24px rgba(0,0,0,.24),
-    0 3px 8px rgba(0,0,0,.18);
+  background:#f1f1ee;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);
 }
-
-.photo-card:first-child{
-  box-shadow:
-    0 10px 24px rgba(0,0,0,.24),
-    0 3px 8px rgba(0,0,0,.18);
-}
-
 .photo-card img{
   width:100%;
   height:100%;
   object-fit:cover;
   object-position:center center;
   display:block;
-  transform:scale(1.18);
 }
-label{display:block;color:#b7b7bf;font-size:14px;margin:0 0 10px}
-input,textarea,.select-input{
+label{
+  display:block;
+  color:#7d838c;
+  font-size:15px;
+  margin:0 0 10px;
+  font-weight:400;
+}
+input,textarea,select{
   width:100%;
-  border:1px solid rgba(255,255,255,.22);
-  border-radius:20px;
+  border:1px solid #dededb;
+  border-radius:22px;
   padding:16px 18px;
   font-size:17px;
   outline:none;
-  background:rgba(255,255,255,.075);
-  color:#fff;
+  background:#ffffff;
+  color:#050505;
 }
-textarea{min-height:150px;resize:vertical;line-height:1.55}
-.select-input{
-  appearance:none;
-  -webkit-appearance:none;
-  border:1px solid rgba(255,255,255,.22);
-  border-radius:20px;
-  padding:16px 18px;
-  font-size:17px;
-  outline:none;
-  background:rgba(255,255,255,.075);
-  color:#fff;
+select option{color:#050505}
+textarea{
+  min-height:150px;
+  resize:vertical;
+  line-height:1.55;
 }
-input::placeholder,textarea::placeholder{color:#94949f}
+input::placeholder,textarea::placeholder{color:#a1a1aa}
 .btn{
   width:100%;
-  border:1px solid rgba(255,255,255,.18);
-  background:#fff;
-  color:#111;
+  border:1px solid #dededb;
   border-radius:999px;
   min-height:54px;
-  padding:0 22px;
   font-size:17px;
-  font-weight:800;
+  font-weight:500;
+  background:#ffffff;
+  color:#050505;
 }
-.btn.dark{background:rgba(255,255,255,.07);color:#fff}
-.btn.danger{background:rgba(255,107,107,.14);color:#fff;border-color:rgba(255,107,107,.45)}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn.primary{
+  background:#050505;
+  color:#ffffff;
+  border-color:#050505;
+}
+.btn.dark{
+  background:#ffffff;
+  color:#050505;
+}
+.btn.danger{
+  background:#fff1f2;
+  color:#991b1b;
+  border-color:#fecaca;
+}
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
 .toast{
   position:fixed;
   left:50%;
   bottom:calc(26px + env(safe-area-inset-bottom));
   transform:translateX(-50%);
-  background:#fff;
-  color:#111;
+  background:#050505;
+  color:#ffffff;
   border-radius:999px;
   padding:12px 20px;
-  font-weight:700;
+  font-weight:500;
   display:none;
-  box-shadow:0 18px 42px rgba(0,0,0,.28);
+  box-shadow:0 18px 42px rgba(0,0,0,.18);
   z-index:99;
 }
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.52);
+  background:rgba(0,0,0,.28);
   display:none;
   align-items:flex-end;
   z-index:50;
@@ -322,23 +254,53 @@ input::placeholder,textarea::placeholder{color:#94949f}
 }
 .sheet{
   width:100%;
-  background:#24242d;
-  border:1px solid rgba(255,255,255,.12);
+  background:#ffffff;
+  border:1px solid #e5e5e1;
   border-radius:30px 30px 0 0;
   padding:22px 18px calc(22px + env(safe-area-inset-bottom));
   max-height:88vh;
   overflow:auto;
 }
-.sheet h2{margin:0 0 18px;font-size:26px;font-weight:400}
-.empty{color:#a3a3ad;text-align:center;padding:20px 8px;font-size:15px}
-.hint{color:#b7b7bf;line-height:1.7;font-size:14px;margin-top:14px}
+.sheet h2{
+  margin:0 0 18px;
+  font-size:28px;
+  font-weight:500;
+  letter-spacing:-.8px;
+  color:#050505;
+}
+.empty{
+  color:#9ca3af;
+  text-align:center;
+  padding:24px 8px;
+  font-size:16px;
+}
+.hint{
+  color:#7d838c;
+  line-height:1.7;
+  font-size:14px;
+  margin-top:14px;
+}
+@media(max-width:520px){
+  h1{letter-spacing:-4px}
+  .subtitle{margin-top:22px;margin-bottom:34px}
+  .tab{font-size:16px}
+  .section{border-radius:26px}
+}
 </style>
+
+<style>
+.copy-card,.photo-card{
+touch-action:manipulation;
+}
+</style>
+
 </head>
 
 <body>
 <div class="wrap">
-  <h1>My Collection</h1>
-  <div class="line"></div>
+  
+<h1>Collection</h1>
+  <div class="subtitle">Save text. Share images. Move as you grow.</div>
 
   <div class="tabs">
     <button class="tab active" id="textTab" onclick="showPanel('text')">文字</button>
@@ -379,7 +341,7 @@ input::placeholder,textarea::placeholder{color:#94949f}
       <div class="hint">
         • 可選擇新增到「程式碼 / 招呼碼 / 對話碼」<br>
         • 點一下文字卡片：複製完整長文字<br>
-        • 長按文字卡片 2 秒：修改或刪除
+        • 長按文字卡片 0.6 秒：可往前 / 往後調整排序
       </div>
     </div>
   </section>
@@ -395,7 +357,7 @@ input::placeholder,textarea::placeholder{color:#94949f}
       <input id="photoInput" type="file" accept="image/*" multiple onchange="addPhotos(event)" />
       <div class="hint">
         • 點一下圖片：直接開啟分享，可分享到 LINE<br>
-        • 長按圖片 2 秒：刪除圖片
+        • 長按圖片 0.6 秒：刪除圖片 / 調整順序
       </div>
     </div>
   </section>
@@ -409,6 +371,11 @@ input::placeholder,textarea::placeholder{color:#94949f}
     <div class="row">
       <button class="btn" onclick="editCurrentCard()">修改</button>
       <button class="btn danger" onclick="showDeleteTextModal()">刪除</button>
+    </div>
+    <br>
+    <div class="row">
+      <button class="btn dark" onclick="moveCurrentText(-1)">往前</button>
+      <button class="btn dark" onclick="moveCurrentText(1)">往後</button>
     </div>
     <br>
     <button class="btn dark" onclick="hideActionModal()">取消</button>
@@ -452,10 +419,15 @@ input::placeholder,textarea::placeholder{color:#94949f}
 
 <div id="deletePhotoModal" class="modal" onclick="closeDeletePhotoModal(event)">
   <div class="sheet" onclick="event.stopPropagation()">
-    <h2>確認刪除圖片</h2>
-    <div class="hint">確定要刪除這張圖片嗎？</div>
+    <h2>管理圖片</h2>
+    <div class="hint">可調整圖片順序，或刪除此圖片。</div>
     <br>
-    <button class="btn danger" onclick="confirmDeletePhoto()">確定刪除</button>
+    <div class="row">
+      <button class="btn dark" onclick="moveCurrentPhoto(-1)">往前</button>
+      <button class="btn dark" onclick="moveCurrentPhoto(1)">往後</button>
+    </div>
+    <br>
+    <button class="btn danger" onclick="confirmDeletePhoto()">刪除圖片</button>
     <br><br>
     <button class="btn dark" onclick="hideDeletePhotoModal()">取消</button>
   </div>
@@ -586,7 +558,7 @@ function startTextLongPress(event,id){
     longPressTriggered = true;
     if(navigator.vibrate) navigator.vibrate(45);
     showActionModal(id);
-  },2000);
+  },600);
 }
 
 function showActionModal(id){
@@ -641,6 +613,35 @@ function confirmDeleteText(){
   toast("已刪除");
 }
 
+
+function moveCurrentText(direction){
+  const index = cards.findIndex(x=>x.id===currentTextId);
+  if(index < 0) return;
+
+  const currentCategory = cards[index].category || "code";
+  const sameCategory = cards
+    .map((card, i)=>({card, i}))
+    .filter(x=>(x.card.category || "code") === currentCategory);
+
+  const pos = sameCategory.findIndex(x=>x.card.id === currentTextId);
+  const target = sameCategory[pos + direction];
+
+  if(!target){
+    toast(direction < 0 ? "已在最前面" : "已在最後面");
+    return;
+  }
+
+  const targetIndex = target.i;
+  const temp = cards[index];
+  cards[index] = cards[targetIndex];
+  cards[targetIndex] = temp;
+
+  saveCards();
+  renderCards();
+  renderCards();
+  toast("已調整順序");
+}
+
 function addPhotos(event){
   const files = Array.from(event.target.files || []);
   if(!files.length) return;
@@ -684,11 +685,33 @@ function startPhotoLongPress(event,id){
     longPressTriggered = true;
     if(navigator.vibrate) navigator.vibrate(45);
     document.getElementById("deletePhotoModal").style.display = "flex";
-  },2000);
+  },600);
 }
 
 function hideDeletePhotoModal(){ document.getElementById("deletePhotoModal").style.display = "none"; }
 function closeDeletePhotoModal(e){ if(e.target.id==="deletePhotoModal") hideDeletePhotoModal(); }
+
+function moveCurrentPhoto(direction){
+  const index = photos.findIndex(x=>x.id===currentPhotoId);
+  if(index < 0) return;
+
+  const targetIndex = index + direction;
+
+  if(targetIndex < 0 || targetIndex >= photos.length){
+    toast(direction < 0 ? "已在最前面" : "已在最後面");
+    return;
+  }
+
+  const temp = photos[index];
+  photos[index] = photos[targetIndex];
+  photos[targetIndex] = temp;
+
+  savePhotos();
+  renderPhotos();
+  renderCards();
+  toast("已調整順序");
+}
+
 function confirmDeletePhoto(){
   photos = photos.filter(x=>x.id!==currentPhotoId);
   savePhotos();

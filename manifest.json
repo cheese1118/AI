@@ -1,10 +1,12 @@
 {
-  "name": "My Collection",
+  "name": "Collection",
   "short_name": "Collection",
+  "description": "Minimal collection PWA",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#14141c",
-  "theme_color": "#14141c",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "orientation": "portrait",
   "icons": [
     {
