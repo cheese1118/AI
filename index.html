@@ -9,178 +9,114 @@
 <meta name="apple-mobile-web-app-title" content="Collection">
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>My Collection Full Test</title>
-
+<title>Collection Tab Fix</title>
 <style>
-:root{
-  --bg:#ffffff;
-  --text:#050505;
-  --muted:#7d838c;
-  --line:#dededb;
-  --soft:#f7f7f5;
-}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
   margin:0;
   min-height:100vh;
-  background:#ffffff;
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","PingFang TC","Noto Sans TC",sans-serif;
-  padding:calc(30px + env(safe-area-inset-top)) 22px calc(34px + env(safe-area-inset-bottom));
+  background:#fff;
+  color:#050505;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang TC","Noto Sans TC",sans-serif;
+  padding:34px 22px;
 }
-.wrap{
-  max-width:720px;
-  margin:0 auto;
-}
+.wrap{max-width:720px;margin:0 auto}
 h1{
   text-align:center;
-  font-size:clamp(64px,14vw,112px);
+  font-size:76px;
   line-height:.9;
   font-weight:500;
-  letter-spacing:-6px;
+  letter-spacing:-5px;
   margin:0;
-  color:#050505;
 }
-.line{
-  display:none;
-}
-.subtitle{
+.sub{
   text-align:center;
   color:#7d838c;
-  font-size:clamp(20px,4vw,28px);
-  line-height:1.4;
-  margin:28px 0 42px;
-  font-weight:400;
-  letter-spacing:-.6px;
+  font-size:24px;
+  margin:24px 0 38px;
 }
-.tabs{
-  max-width:520px;
-  margin:0 auto 28px;
+.tabs,.category-tabs{
   display:grid;
-  grid-template-columns:1fr 1fr;
   gap:0;
   padding:6px;
   border:1px solid #dededb;
   border-radius:999px;
-  background:#ffffff;
+  background:#fff;
 }
-.tab{
-  border:none;
+.tabs{grid-template-columns:1fr 1fr;margin-bottom:26px}
+.category-tabs{grid-template-columns:1fr 1fr 1fr;margin-bottom:18px}
+.tab,.category-tab{
+  border:0;
   border-radius:999px;
-  min-height:48px;
+  min-height:50px;
   background:transparent;
   color:#9ca3af;
-  font-size:18px;
+  font-size:17px;
   font-weight:500;
 }
-.tab.active{
+.category-tab{min-height:44px;font-size:16px}
+.tab.active,.category-tab.active{
   background:#050505;
-  color:#ffffff;
-}
-.demo-count{
-  text-align:center;
-  color:#a1a1aa;
-  font-size:14px;
-  margin:0 0 24px;
+  color:#fff;
 }
 .panel{display:none}
 .panel.active{display:block}
 .section{
-  background:#ffffff;
   border:1px solid #e5e5e1;
   border-radius:30px;
   padding:18px;
   margin-bottom:24px;
+  background:#fff;
   box-shadow:0 8px 30px rgba(0,0,0,.04);
 }
-.category-tabs{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:0;
-  padding:5px;
-  border:1px solid #dededb;
-  border-radius:999px;
-  background:#ffffff;
-  margin-bottom:18px;
-}
-.category-tab{
-  border:none;
-  border-radius:999px;
-  min-height:44px;
-  background:transparent;
-  color:#9ca3af;
-  font-size:16px;
-  font-weight:500;
-}
-.category-tab.active{
-  background:#050505;
-  color:#ffffff;
-}
-.segment{
+.card-list{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
-  overflow:visible;
 }
-.copy-card{
+.text-card{
   border:1px solid #dededb;
-  background:#ffffff;
+  background:#fff;
   color:#222;
   border-radius:999px;
   min-height:42px;
   padding:0 18px;
-  flex:0 0 auto;
   font-size:15px;
   font-weight:500;
-  transition:.15s ease;
-  user-select:none;
-  -webkit-user-select:none;
+  touch-action:manipulation;
 }
-.copy-card:active,.photo-card:active{
-  transform:scale(.97);
-}
-.copy-card.active{
+.text-card.active{
   background:#050505;
-  color:#ffffff;
+  color:#fff;
   border-color:#050505;
 }
 .photo-row{
   display:flex;
   gap:12px;
   overflow-x:auto;
-  scrollbar-width:none;
   align-items:center;
 }
-.photo-row::-webkit-scrollbar{display:none}
 .photo-card{
   appearance:none;
   -webkit-appearance:none;
   padding:0;
   margin:0;
-  line-height:0;
-  position:relative;
+  border:0;
   width:86px;
   height:86px;
   flex:0 0 86px;
-  border-radius:24px;
+  border-radius:50%;
   overflow:hidden;
-  border:none;
   background:#f1f1ee;
   box-shadow:0 8px 24px rgba(0,0,0,.08);
+  touch-action:manipulation;
 }
 .photo-card img{
   width:100%;
   height:100%;
   object-fit:cover;
-  object-position:center center;
+  object-position:center;
   display:block;
-}
-label{
-  display:block;
-  color:#7d838c;
-  font-size:15px;
-  margin:0 0 10px;
-  font-weight:400;
 }
 input,textarea,select{
   width:100%;
@@ -189,57 +125,36 @@ input,textarea,select{
   padding:16px 18px;
   font-size:17px;
   outline:none;
-  background:#ffffff;
+  background:#fff;
   color:#050505;
+  margin-bottom:14px;
 }
-select option{color:#050505}
-textarea{
-  min-height:150px;
-  resize:vertical;
-  line-height:1.55;
-}
-input::placeholder,textarea::placeholder{color:#a1a1aa}
+textarea{min-height:120px;resize:none;line-height:1.5}
 .btn{
   width:100%;
   border:1px solid #dededb;
   border-radius:999px;
   min-height:54px;
+  background:#050505;
+  color:#fff;
   font-size:17px;
   font-weight:500;
-  background:#ffffff;
-  color:#050505;
 }
-.btn.primary{
-  background:#050505;
-  color:#ffffff;
-  border-color:#050505;
-}
-.btn.dark{
-  background:#ffffff;
-  color:#050505;
-}
-.btn.danger{
-  background:#fff1f2;
-  color:#991b1b;
-  border-color:#fecaca;
-}
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
+.btn.light{background:#fff;color:#050505}
+.btn.danger{background:#fff1f2;color:#991b1b;border-color:#fecaca}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.empty{color:#9ca3af;text-align:center;padding:24px 8px;font-size:16px}
+.hint{color:#7d838c;line-height:1.7;font-size:14px;margin-top:14px}
 .toast{
   position:fixed;
   left:50%;
-  bottom:calc(26px + env(safe-area-inset-bottom));
+  bottom:28px;
   transform:translateX(-50%);
   background:#050505;
-  color:#ffffff;
+  color:#fff;
   border-radius:999px;
   padding:12px 20px;
-  font-weight:500;
   display:none;
-  box-shadow:0 18px 42px rgba(0,0,0,.18);
   z-index:99;
 }
 .modal{
@@ -250,560 +165,420 @@ input::placeholder,textarea::placeholder{color:#a1a1aa}
   align-items:flex-end;
   z-index:50;
   backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
 }
 .sheet{
   width:100%;
-  background:#ffffff;
-  border:1px solid #e5e5e1;
+  background:#fff;
   border-radius:30px 30px 0 0;
-  padding:22px 18px calc(22px + env(safe-area-inset-bottom));
+  padding:22px 18px 28px;
   max-height:88vh;
   overflow:auto;
 }
-.sheet h2{
-  margin:0 0 18px;
-  font-size:28px;
-  font-weight:500;
-  letter-spacing:-.8px;
-  color:#050505;
-}
-.empty{
-  color:#9ca3af;
-  text-align:center;
-  padding:24px 8px;
-  font-size:16px;
-}
-.hint{
-  color:#7d838c;
-  line-height:1.7;
-  font-size:14px;
-  margin-top:14px;
-}
-@media(max-width:520px){
-  h1{letter-spacing:-4px}
-  .subtitle{margin-top:22px;margin-bottom:34px}
-  .tab{font-size:16px}
-  .section{border-radius:26px}
-}
+.sheet h2{margin:0 0 18px;font-size:28px;font-weight:500;color:#050505}
 </style>
-
-<style>
-.copy-card,.photo-card{
-touch-action:manipulation;
-}
-</style>
-
 </head>
 
 <body>
 <div class="wrap">
-  
-<h1>Collection</h1>
-  <div class="subtitle">Save text. Share images. Move as you grow.</div>
+  <h1>Collection</h1>
+  <div class="sub">Save text. Share images.</div>
 
   <div class="tabs">
-    <button class="tab active" id="textTab" onclick="showPanel('text')">文字</button>
-    <button class="tab" id="photoTab" onclick="showPanel('photo')">圖片</button>
+    <button type="button" id="tabText" class="tab active">文字</button>
+    <button type="button" id="tabPhoto" class="tab">圖片</button>
   </div>
 
-  <section id="textPanel" class="panel active">
-    <div class="section card-display-section">
+  <section id="panelText" class="panel active">
+    <div class="section">
       <div class="category-tabs">
-        <button class="category-tab active" id="catCode" onclick="setCategory('code')">程式碼</button>
-        <button class="category-tab" id="catGreeting" onclick="setCategory('greeting')">招呼碼</button>
-        <button class="category-tab" id="catDialog" onclick="setCategory('dialog')">對話碼</button>
+        <button type="button" class="category-tab active" data-cat="code">程式碼</button>
+        <button type="button" class="category-tab" data-cat="hello">招呼碼</button>
+        <button type="button" class="category-tab" data-cat="dialog">對話碼</button>
       </div>
-
-      <div id="cardList" class="segment"></div>
-      <div id="emptyText" class="empty">此類別尚未建立文字卡片</div>
+      <div id="textList" class="card-list"></div>
+      <div id="textEmpty" class="empty">此類別尚未建立文字卡片</div>
+      <div class="hint">點一下複製，長按 0.6 秒可修改 / 刪除 / 排序。</div>
     </div>
 
-    <div style="height:90px;"></div>
-
     <div class="section">
-      <label>新增至類別</label>
-      <select id="categoryInput" class="select-input">
+      <select id="newTextCategory">
         <option value="code">程式碼</option>
-        <option value="greeting">招呼碼</option>
+        <option value="hello">招呼碼</option>
         <option value="dialog">對話碼</option>
       </select>
-
-      <br><br>
-
-      <label>輸入標題</label>
-      <input id="titleInput" placeholder="例如：Q版Prompt、LINE回覆、VBA" />
-      <br><br>
-      <label>輸入長文字內容</label>
-      <textarea id="bodyInput" placeholder="這裡可以貼很長的文字內容，點卡片時會完整複製..."></textarea>
-      <br><br>
-      <button class="btn" onclick="addCard()">儲存文字卡片</button>
-      <div class="hint">
-        • 可選擇新增到「程式碼 / 招呼碼 / 對話碼」<br>
-        • 點一下文字卡片：複製完整長文字<br>
-        • 長按文字卡片 0.6 秒：可往前 / 往後調整排序
-      </div>
+      <input id="newTextTitle" placeholder="輸入標題">
+      <textarea id="newTextBody" placeholder="輸入長文字內容"></textarea>
+      <button type="button" id="addTextBtn" class="btn">新增文字卡片</button>
     </div>
   </section>
 
-  <section id="photoPanel" class="panel">
+  <section id="panelPhoto" class="panel">
     <div class="section">
       <div id="photoList" class="photo-row"></div>
-      <div id="emptyPhoto" class="empty">尚未加入圖片</div>
+      <div id="photoEmpty" class="empty">尚未加入圖片</div>
+      <div class="hint">點一下圖片分享，長按 0.6 秒可刪除 / 排序。</div>
     </div>
 
     <div class="section">
-      <label>新增圖片，可多選</label>
-      <input id="photoInput" type="file" accept="image/*" multiple onchange="addPhotos(event)" />
-      <div class="hint">
-        • 點一下圖片：直接開啟分享，可分享到 LINE<br>
-        • 長按圖片 0.6 秒：刪除圖片 / 調整順序
-      </div>
+      <input id="photoInput" type="file" accept="image/*" multiple style="display:none">
+      <button type="button" id="addPhotoBtn" class="btn">加入照片</button>
     </div>
   </section>
 </div>
 
-<div id="toast" class="toast">已複製</div>
+<div id="toast" class="toast">完成</div>
 
-<div id="actionModal" class="modal" onclick="closeActionModal(event)">
-  <div class="sheet" onclick="event.stopPropagation()">
-    <h2 id="actionTitle">管理文字卡片</h2>
+<div id="textManageModal" class="modal">
+  <div class="sheet">
+    <h2 id="textManageTitle">管理文字卡片</h2>
     <div class="row">
-      <button class="btn" onclick="editCurrentCard()">修改</button>
-      <button class="btn danger" onclick="showDeleteTextModal()">刪除</button>
+      <button type="button" id="editTextBtn" class="btn">修改</button>
+      <button type="button" id="deleteTextBtn" class="btn danger">刪除</button>
     </div>
     <br>
     <div class="row">
-      <button class="btn dark" onclick="moveCurrentText(-1)">往前</button>
-      <button class="btn dark" onclick="moveCurrentText(1)">往後</button>
+      <button type="button" id="textPrevBtn" class="btn light">往前</button>
+      <button type="button" id="textNextBtn" class="btn light">往後</button>
     </div>
     <br>
-    <button class="btn dark" onclick="hideActionModal()">取消</button>
+    <button type="button" class="btn light closeModal">取消</button>
   </div>
 </div>
 
-<div id="editModal" class="modal" onclick="closeEditModal(event)">
-  <div class="sheet" onclick="event.stopPropagation()">
+<div id="editTextModal" class="modal">
+  <div class="sheet">
     <h2>修改文字卡片</h2>
-    <label>類別</label>
-    <select id="editCategoryInput" class="select-input">
+    <select id="editTextCategory">
       <option value="code">程式碼</option>
-      <option value="greeting">招呼碼</option>
+      <option value="hello">招呼碼</option>
       <option value="dialog">對話碼</option>
     </select>
-
+    <input id="editTextTitle" placeholder="標題">
+    <textarea id="editTextBody" placeholder="內容"></textarea>
+    <button type="button" id="saveEditTextBtn" class="btn">儲存修改</button>
     <br><br>
-
-    <label>標題</label>
-    <input id="editTitleInput" />
-    <br><br>
-    <label>長文字內容</label>
-    <textarea id="editBodyInput"></textarea>
-    <br><br>
-    <button class="btn" onclick="saveEditCard()">儲存修改</button>
-    <br><br>
-    <button class="btn dark" onclick="hideEditModal()">取消</button>
+    <button type="button" class="btn light closeModal">取消</button>
   </div>
 </div>
 
-<div id="deleteTextModal" class="modal" onclick="closeDeleteTextModal(event)">
-  <div class="sheet" onclick="event.stopPropagation()">
-    <h2>確認刪除</h2>
-    <div class="hint">確定要刪除「<span id="deleteTextTitle"></span>」這張文字卡片嗎？</div>
-    <br>
-    <button class="btn danger" onclick="confirmDeleteText()">確定刪除</button>
-    <br><br>
-    <button class="btn dark" onclick="hideDeleteTextModal()">取消</button>
-  </div>
-</div>
-
-<div id="deletePhotoModal" class="modal" onclick="closeDeletePhotoModal(event)">
-  <div class="sheet" onclick="event.stopPropagation()">
+<div id="photoManageModal" class="modal">
+  <div class="sheet">
     <h2>管理圖片</h2>
-    <div class="hint">可調整圖片順序，或刪除此圖片。</div>
-    <br>
     <div class="row">
-      <button class="btn dark" onclick="moveCurrentPhoto(-1)">往前</button>
-      <button class="btn dark" onclick="moveCurrentPhoto(1)">往後</button>
+      <button type="button" id="photoPrevBtn" class="btn light">往前</button>
+      <button type="button" id="photoNextBtn" class="btn light">往後</button>
     </div>
     <br>
-    <button class="btn danger" onclick="confirmDeletePhoto()">刪除圖片</button>
+    <button type="button" id="deletePhotoBtn" class="btn danger">刪除圖片</button>
     <br><br>
-    <button class="btn dark" onclick="hideDeletePhotoModal()">取消</button>
+    <button type="button" class="btn light closeModal">取消</button>
   </div>
 </div>
 
 <script>
-const TEXT_KEY = "collection_text_cards_v2";
-const PHOTO_KEY = "collection_photos_v2";
+(function(){
+  const TEXT_KEY="collection_text_tabfix_v1";
+  const PHOTO_KEY="collection_photo_tabfix_v1";
 
-let cards = [];
-let photos = [];
-let currentTextId = null;
-let currentPhotoId = null;
-let activeCategory = "code";
-let longPressTimer = null;
-let longPressTriggered = false;
+  let textCards=[];
+  let photos=[];
+  let activeCat="code";
+  let currentTextId=null;
+  let currentPhotoId=null;
+  let pressTimer=null;
+  let didLong=false;
 
-function showPanel(type){
-  document.getElementById("textPanel").classList.toggle("active", type === "text");
-  document.getElementById("photoPanel").classList.toggle("active", type === "photo");
-  document.getElementById("textTab").classList.toggle("active", type === "text");
-  document.getElementById("photoTab").classList.toggle("active", type === "photo");
-}
-
-function loadAll(){
-  try{ cards = JSON.parse(localStorage.getItem(TEXT_KEY) || "[]"); }catch(e){ cards = []; }
-  try{ photos = JSON.parse(localStorage.getItem(PHOTO_KEY) || "[]"); }catch(e){ photos = []; }
-
-  if(cards.length === 0){
-    cards = [
-      {id:"demo_1", category:"dialog", title:"Q版Prompt", body:"這是一段很長的 Q版 Prompt 範例文字。點擊卡片會完整複製這整段內容。"},
-      {id:"demo_2", category:"greeting", title:"LINE回覆", body:"您好，已收到您的訊息，我這邊確認後會再回覆您，謝謝。"},
-      {id:"demo_3", category:"code", title:"VBA範例", body:"Sub Test()\n    MsgBox \"Hello\"\nEnd Sub"}
+  function load(){
+    textCards = JSON.parse(localStorage.getItem(TEXT_KEY) || "null") || [
+      {id:"t1",cat:"code",title:"123",body:"123"},
+      {id:"t2",cat:"code",title:"345",body:"345"},
+      {id:"t3",cat:"hello",title:"Hi",body:"Hi"},
+      {id:"t4",cat:"dialog",title:"OK",body:"OK"}
     ];
-    saveCards();
-  }
-}
-
-function saveCards(){ localStorage.setItem(TEXT_KEY, JSON.stringify(cards)); }
-function savePhotos(){ localStorage.setItem(PHOTO_KEY, JSON.stringify(photos)); }
-
-function normalizeCards(){
-  cards = cards.map(card => {
-    if(!card.category) card.category = "code";
-    return card;
-  });
-  saveCards();
-}
-
-function setCategory(category){
-  activeCategory = category;
-  document.getElementById("catCode").classList.toggle("active", category === "code");
-  document.getElementById("catGreeting").classList.toggle("active", category === "greeting");
-  document.getElementById("catDialog").classList.toggle("active", category === "dialog");
-  renderCards();
-}
-
-function renderCards(){
-  const list = document.getElementById("cardList");
-  const empty = document.getElementById("emptyText");
-  const filteredCards = cards.filter(card => (card.category || "code") === activeCategory);
-  empty.style.display = filteredCards.length ? "none" : "block";
-  list.innerHTML = filteredCards.map((card,index)=>`
-    <button class="copy-card ${index === 0 ? "active" : ""}"
-      ontouchstart="startTextLongPress(event,'${card.id}')"
-      ontouchend="endLongPress(event)"
-      ontouchmove="cancelLongPress()"
-      onmousedown="startTextLongPress(event,'${card.id}')"
-      onmouseup="endLongPress(event)"
-      onmouseleave="cancelLongPress()"
-      onclick="handleCardClick(event,'${card.id}')">
-      ${escapeHtml(card.title)}
-    </button>
-  `).join("");
-}
-
-function renderPhotos(){
-  const list = document.getElementById("photoList");
-  const empty = document.getElementById("emptyPhoto");
-  empty.style.display = photos.length ? "none" : "block";
-  list.innerHTML = photos.map(photo=>`
-    <button class="photo-card"
-      ontouchstart="startPhotoLongPress(event,'${photo.id}')"
-      ontouchend="endLongPress(event)"
-      ontouchmove="cancelLongPress()"
-      onmousedown="startPhotoLongPress(event,'${photo.id}')"
-      onmouseup="endLongPress(event)"
-      onmouseleave="cancelLongPress()"
-      onclick="handlePhotoClick(event,'${photo.id}')">
-      <img src="${photo.dataUrl}" alt="">
-    </button>
-  `).join("");
-}
-
-function addCard(){
-  const title = document.getElementById("titleInput").value.trim();
-  const body = document.getElementById("bodyInput").value;
-  if(!title || !body.trim()){ toast("請輸入標題與內容"); return; }
-  const category = document.getElementById("categoryInput").value;
-  cards.unshift({id:"card_"+Date.now(), category, title, body});
-  activeCategory = category;
-  setCategory(category);
-  saveCards();
-  document.getElementById("titleInput").value = "";
-  document.getElementById("bodyInput").value = "";
-  renderCards();
-  toast("已儲存");
-}
-
-function handleCardClick(event,id){
-  if(longPressTriggered){
-    event.preventDefault();
-    longPressTriggered = false;
-    return;
-  }
-  const card = cards.find(x=>x.id===id);
-  if(!card) return;
-  copyText(card.body);
-  document.querySelectorAll(".copy-card").forEach(btn=>btn.classList.remove("active"));
-  event.currentTarget.classList.add("active");
-}
-
-function startTextLongPress(event,id){
-  longPressTriggered = false;
-  currentTextId = id;
-  clearTimeout(longPressTimer);
-  longPressTimer = setTimeout(()=>{
-    longPressTriggered = true;
-    if(navigator.vibrate) navigator.vibrate(45);
-    showActionModal(id);
-  },600);
-}
-
-function showActionModal(id){
-  currentTextId = id;
-  const card = cards.find(x=>x.id===id);
-  if(card) document.getElementById("actionTitle").textContent = card.title;
-  document.getElementById("actionModal").style.display = "flex";
-}
-function hideActionModal(){ document.getElementById("actionModal").style.display = "none"; }
-function closeActionModal(e){ if(e.target.id==="actionModal") hideActionModal(); }
-
-function editCurrentCard(){
-  const card = cards.find(x=>x.id===currentTextId);
-  if(!card) return;
-  document.getElementById("editCategoryInput").value = card.category || "code";
-  document.getElementById("editTitleInput").value = card.title;
-  document.getElementById("editBodyInput").value = card.body;
-  hideActionModal();
-  document.getElementById("editModal").style.display = "flex";
-}
-function hideEditModal(){ document.getElementById("editModal").style.display = "none"; }
-function closeEditModal(e){ if(e.target.id==="editModal") hideEditModal(); }
-
-function saveEditCard(){
-  const card = cards.find(x=>x.id===currentTextId);
-  if(!card) return;
-  const title = document.getElementById("editTitleInput").value.trim();
-  const body = document.getElementById("editBodyInput").value;
-  if(!title || !body.trim()){ toast("請輸入標題與內容"); return; }
-  card.title = title;
-  card.body = body;
-  saveCards();
-  renderCards();
-  hideEditModal();
-  toast("已修改");
-}
-
-function showDeleteTextModal(){
-  const card = cards.find(x=>x.id===currentTextId);
-  if(!card) return;
-  document.getElementById("deleteTextTitle").textContent = card.title;
-  hideActionModal();
-  document.getElementById("deleteTextModal").style.display = "flex";
-}
-function hideDeleteTextModal(){ document.getElementById("deleteTextModal").style.display = "none"; }
-function closeDeleteTextModal(e){ if(e.target.id==="deleteTextModal") hideDeleteTextModal(); }
-function confirmDeleteText(){
-  cards = cards.filter(x=>x.id!==currentTextId);
-  saveCards();
-  renderCards();
-  hideDeleteTextModal();
-  toast("已刪除");
-}
-
-
-function moveCurrentText(direction){
-  const index = cards.findIndex(x=>x.id===currentTextId);
-  if(index < 0) return;
-
-  const currentCategory = cards[index].category || "code";
-  const sameCategory = cards
-    .map((card, i)=>({card, i}))
-    .filter(x=>(x.card.category || "code") === currentCategory);
-
-  const pos = sameCategory.findIndex(x=>x.card.id === currentTextId);
-  const target = sameCategory[pos + direction];
-
-  if(!target){
-    toast(direction < 0 ? "已在最前面" : "已在最後面");
-    return;
+    photos = JSON.parse(localStorage.getItem(PHOTO_KEY) || "[]");
   }
 
-  const targetIndex = target.i;
-  const temp = cards[index];
-  cards[index] = cards[targetIndex];
-  cards[targetIndex] = temp;
+  function saveText(){localStorage.setItem(TEXT_KEY,JSON.stringify(textCards))}
+  function savePhotos(){localStorage.setItem(PHOTO_KEY,JSON.stringify(photos))}
 
-  saveCards();
-  renderCards();
-  renderCards();
-  toast("已調整順序");
-}
-
-function addPhotos(event){
-  const files = Array.from(event.target.files || []);
-  if(!files.length) return;
-  let pending = files.length;
-  files.forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = ()=>{
-      photos.unshift({
-        id:"photo_"+Date.now()+"_"+Math.random().toString(36).slice(2),
-        name:file.name || "image",
-        type:file.type || "image/jpeg",
-        dataUrl:reader.result
-      });
-      pending--;
-      if(pending===0){
-        savePhotos();
-        renderPhotos();
-        event.target.value = "";
-        toast("已加入圖片");
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-function handlePhotoClick(event,id){
-  if(longPressTriggered){
-    event.preventDefault();
-    longPressTriggered = false;
-    return;
-  }
-  const photo = photos.find(x=>x.id===id);
-  if(photo) sharePhoto(photo);
-}
-
-function startPhotoLongPress(event,id){
-  longPressTriggered = false;
-  currentPhotoId = id;
-  clearTimeout(longPressTimer);
-  longPressTimer = setTimeout(()=>{
-    longPressTriggered = true;
-    if(navigator.vibrate) navigator.vibrate(45);
-    document.getElementById("deletePhotoModal").style.display = "flex";
-  },600);
-}
-
-function hideDeletePhotoModal(){ document.getElementById("deletePhotoModal").style.display = "none"; }
-function closeDeletePhotoModal(e){ if(e.target.id==="deletePhotoModal") hideDeletePhotoModal(); }
-
-function moveCurrentPhoto(direction){
-  const index = photos.findIndex(x=>x.id===currentPhotoId);
-  if(index < 0) return;
-
-  const targetIndex = index + direction;
-
-  if(targetIndex < 0 || targetIndex >= photos.length){
-    toast(direction < 0 ? "已在最前面" : "已在最後面");
-    return;
+  function toast(msg){
+    const t=document.getElementById("toast");
+    t.textContent=msg;
+    t.style.display="block";
+    setTimeout(()=>t.style.display="none",1000);
   }
 
-  const temp = photos[index];
-  photos[index] = photos[targetIndex];
-  photos[targetIndex] = temp;
-
-  savePhotos();
-  renderPhotos();
-  renderCards();
-  toast("已調整順序");
-}
-
-function confirmDeletePhoto(){
-  photos = photos.filter(x=>x.id!==currentPhotoId);
-  savePhotos();
-  renderPhotos();
-  hideDeletePhotoModal();
-  toast("已刪除圖片");
-}
-
-function endLongPress(event){
-  clearTimeout(longPressTimer);
-  longPressTimer = null;
-}
-function cancelLongPress(){
-  clearTimeout(longPressTimer);
-  longPressTimer = null;
-}
-
-async function copyText(text){
-  let success = false;
-  try{
-    await navigator.clipboard.writeText(text);
-    success = true;
-  }catch(err){}
-  if(!success){
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    textarea.setAttribute("readonly","");
-    textarea.style.position = "fixed";
-    textarea.style.top = "0";
-    textarea.style.left = "-9999px";
-    textarea.style.opacity = "0";
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-    textarea.setSelectionRange(0, textarea.value.length);
-    try{ success = document.execCommand("copy"); }catch(err){}
-    document.body.removeChild(textarea);
+  function showPanel(type){
+    document.getElementById("panelText").classList.toggle("active",type==="text");
+    document.getElementById("panelPhoto").classList.toggle("active",type==="photo");
+    document.getElementById("tabText").classList.toggle("active",type==="text");
+    document.getElementById("tabPhoto").classList.toggle("active",type==="photo");
   }
-  if(success){
-    if(navigator.vibrate) navigator.vibrate(30);
-    toast("已複製完整內容");
-  }else{
-    alert("複製失敗，請手動選取文字");
-  }
-}
 
-async function sharePhoto(photo){
-  try{
-    const file = dataURLToFile(photo.dataUrl, photo.name, photo.type);
-    if(navigator.canShare && navigator.canShare({files:[file]})){
-      await navigator.share({title:photo.name, files:[file]});
-      toast("已開啟分享");
-    }else if(navigator.share){
-      await navigator.share({title:photo.name});
-    }else{
-      toast("此瀏覽器不支援分享");
+  function bindPress(el,onLong,onTap){
+    function start(){
+      didLong=false;
+      clearTimeout(pressTimer);
+      pressTimer=setTimeout(()=>{
+        didLong=true;
+        if(navigator.vibrate) navigator.vibrate(25);
+        onLong();
+      },600);
     }
-  }catch(err){
-    toast("分享已取消或失敗");
+    function end(){
+      clearTimeout(pressTimer);
+      if(didLong){
+        setTimeout(()=>didLong=false,0);
+        return;
+      }
+      onTap();
+    }
+    el.addEventListener("touchstart",start,{passive:true});
+    el.addEventListener("touchend",end);
+    el.addEventListener("touchmove",()=>clearTimeout(pressTimer),{passive:true});
+    el.addEventListener("mousedown",start);
+    el.addEventListener("mouseup",end);
+    el.addEventListener("mouseleave",()=>clearTimeout(pressTimer));
   }
-}
 
-function dataURLToFile(dataUrl, filename, mimeType){
-  const arr = dataUrl.split(",");
-  const mime = mimeType || (arr[0].match(/:(.*?);/) || [])[1] || "image/jpeg";
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-  while(n--) u8arr[n] = bstr.charCodeAt(n);
-  return new File([u8arr], filename || "image.jpg", {type:mime});
-}
+  function renderText(){
+    const list=document.getElementById("textList");
+    const empty=document.getElementById("textEmpty");
+    const items=textCards.filter(x=>x.cat===activeCat);
+    list.innerHTML="";
+    empty.style.display=items.length?"none":"block";
 
-function toast(msg){
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.style.display = "block";
-  setTimeout(()=>{ t.style.display = "none"; },1300);
-}
+    items.forEach((item,index)=>{
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="text-card"+(index===0?" active":"");
+      btn.textContent=item.title;
+      bindPress(btn,()=>openTextManage(item.id),()=>copyText(item.body,btn));
+      list.appendChild(btn);
+    });
+  }
 
-function escapeHtml(str){
-  return String(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
+  function renderPhotos(){
+    const list=document.getElementById("photoList");
+    const empty=document.getElementById("photoEmpty");
+    list.innerHTML="";
+    empty.style.display=photos.length?"none":"block";
 
-loadAll();
-normalizeCards();
-renderCards();
-renderPhotos();
+    photos.forEach(photo=>{
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="photo-card";
+      const img=document.createElement("img");
+      img.src=photo.dataUrl;
+      btn.appendChild(img);
+      bindPress(btn,()=>openPhotoManage(photo.id),()=>sharePhoto(photo));
+      list.appendChild(btn);
+    });
+  }
+
+  async function copyText(text,btn){
+    try{await navigator.clipboard.writeText(text)}
+    catch(e){
+      const ta=document.createElement("textarea");
+      ta.value=text;
+      ta.style.position="fixed";
+      ta.style.left="-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    document.querySelectorAll(".text-card").forEach(x=>x.classList.remove("active"));
+    if(btn) btn.classList.add("active");
+    toast("已複製");
+  }
+
+  function addText(){
+    const cat=document.getElementById("newTextCategory").value;
+    const title=document.getElementById("newTextTitle").value.trim();
+    const body=document.getElementById("newTextBody").value.trim();
+    if(!title||!body)return;
+
+    textCards.unshift({id:"t"+Date.now(),cat,title,body});
+    activeCat=cat;
+    saveText();
+    document.getElementById("newTextTitle").value="";
+    document.getElementById("newTextBody").value="";
+    updateCatUI();
+    renderText();
+    toast("已新增");
+  }
+
+  function openTextManage(id){
+    currentTextId=id;
+    const item=textCards.find(x=>x.id===id);
+    document.getElementById("textManageTitle").textContent=item?item.title:"管理文字卡片";
+    openModal("textManageModal");
+  }
+
+  function editText(){
+    const item=textCards.find(x=>x.id===currentTextId);
+    if(!item)return;
+    document.getElementById("editTextCategory").value=item.cat;
+    document.getElementById("editTextTitle").value=item.title;
+    document.getElementById("editTextBody").value=item.body;
+    closeModal("textManageModal");
+    openModal("editTextModal");
+  }
+
+  function saveEditText(){
+    const item=textCards.find(x=>x.id===currentTextId);
+    if(!item)return;
+    item.cat=document.getElementById("editTextCategory").value;
+    item.title=document.getElementById("editTextTitle").value.trim();
+    item.body=document.getElementById("editTextBody").value.trim();
+    activeCat=item.cat;
+    saveText();
+    closeModal("editTextModal");
+    updateCatUI();
+    renderText();
+    toast("已修改");
+  }
+
+  function deleteText(){
+    textCards=textCards.filter(x=>x.id!==currentTextId);
+    saveText();
+    closeModal("textManageModal");
+    renderText();
+    toast("已刪除");
+  }
+
+  function moveText(direction){
+    const index=textCards.findIndex(x=>x.id===currentTextId);
+    if(index<0)return;
+    const cat=textCards[index].cat;
+    const same=textCards.map((x,i)=>({x,i})).filter(o=>o.x.cat===cat);
+    const pos=same.findIndex(o=>o.x.id===currentTextId);
+    const target=same[pos+direction];
+    if(!target){toast(direction<0?"已在最前面":"已在最後面");return}
+    const ti=target.i;
+    [textCards[index],textCards[ti]]=[textCards[ti],textCards[index]];
+    saveText();
+    renderText();
+    toast("已調整順序");
+  }
+
+  function addPhotos(event){
+    const files=Array.from(event.target.files||[]);
+    if(!files.length)return;
+    let done=0;
+
+    files.forEach(file=>{
+      const reader=new FileReader();
+      reader.onload=()=>{
+        photos.unshift({
+          id:"p"+Date.now()+"_"+Math.random().toString(36).slice(2),
+          name:file.name,
+          type:file.type,
+          dataUrl:reader.result
+        });
+        done++;
+        if(done===files.length){
+          savePhotos();
+          renderPhotos();
+          event.target.value="";
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function sharePhoto(photo){
+    try{
+      const file=dataURLToFile(photo.dataUrl,photo.name,photo.type);
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file]});
+      }
+    }catch(e){}
+  }
+
+  function dataURLToFile(dataUrl,filename,mimeType){
+    const arr=dataUrl.split(",");
+    const bstr=atob(arr[1]);
+    let n=bstr.length;
+    const u8arr=new Uint8Array(n);
+    while(n--)u8arr[n]=bstr.charCodeAt(n);
+    return new File([u8arr],filename,{type:mimeType});
+  }
+
+  function openPhotoManage(id){
+    currentPhotoId=id;
+    openModal("photoManageModal");
+  }
+
+  function deletePhoto(){
+    photos=photos.filter(x=>x.id!==currentPhotoId);
+    savePhotos();
+    closeModal("photoManageModal");
+    renderPhotos();
+  }
+
+  function movePhoto(direction){
+    const index=photos.findIndex(x=>x.id===currentPhotoId);
+    if(index<0)return;
+    const target=index+direction;
+    if(target<0||target>=photos.length){toast(direction<0?"已在最前面":"已在最後面");return}
+    [photos[index],photos[target]]=[photos[target],photos[index]];
+    savePhotos();
+    renderPhotos();
+    toast("已調整順序");
+  }
+
+  function openModal(id){document.getElementById(id).style.display="flex"}
+  function closeModal(id){document.getElementById(id).style.display="none"}
+  function closeAll(){document.querySelectorAll(".modal").forEach(m=>m.style.display="none")}
+
+  function updateCatUI(){
+    document.querySelectorAll(".category-tab").forEach(btn=>{
+      btn.classList.toggle("active",btn.dataset.cat===activeCat);
+    });
+  }
+
+  function bindUI(){
+    document.getElementById("tabText").addEventListener("click",()=>showPanel("text"));
+    document.getElementById("tabPhoto").addEventListener("click",()=>showPanel("photo"));
+
+    document.querySelectorAll(".category-tab").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        activeCat=btn.dataset.cat;
+        updateCatUI();
+        renderText();
+      });
+    });
+
+    document.getElementById("addTextBtn").addEventListener("click",addText);
+    document.getElementById("addPhotoBtn").addEventListener("click",()=>document.getElementById("photoInput").click());
+    document.getElementById("photoInput").addEventListener("change",addPhotos);
+
+    document.getElementById("editTextBtn").addEventListener("click",editText);
+    document.getElementById("deleteTextBtn").addEventListener("click",deleteText);
+    document.getElementById("textPrevBtn").addEventListener("click",()=>moveText(-1));
+    document.getElementById("textNextBtn").addEventListener("click",()=>moveText(1));
+    document.getElementById("saveEditTextBtn").addEventListener("click",saveEditText);
+
+    document.getElementById("photoPrevBtn").addEventListener("click",()=>movePhoto(-1));
+    document.getElementById("photoNextBtn").addEventListener("click",()=>movePhoto(1));
+    document.getElementById("deletePhotoBtn").addEventListener("click",deletePhoto);
+
+    document.querySelectorAll(".closeModal").forEach(btn=>btn.addEventListener("click",closeAll));
+    document.querySelectorAll(".modal").forEach(modal=>{
+      modal.addEventListener("click",e=>{if(e.target===modal)closeAll()});
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    load();
+    bindUI();
+    updateCatUI();
+    renderText();
+    renderPhotos();
+  });
+})();
 </script>
 <script>
 if ("serviceWorker" in navigator) {

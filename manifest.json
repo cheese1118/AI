@@ -1,7 +1,7 @@
 {
   "name": "Collection",
   "short_name": "Collection",
-  "description": "Minimal collection PWA",
+  "description": "文字與圖片快速收藏、複製、分享工具",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
